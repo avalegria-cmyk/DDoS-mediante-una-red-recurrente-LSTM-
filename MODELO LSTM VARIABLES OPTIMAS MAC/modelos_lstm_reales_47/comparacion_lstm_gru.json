@@ -1,0 +1,21 @@
+[
+  {
+    "modelo": "LSTM",
+    "accuracy": 0.9708043256927438,
+    "precision": 0.9631392045454545,
+    "recall": 0.9991526984711734,
+    "f1_score": 0.9808154778049001,
+    "roc_auc": 0.996290660222024,
+    "confusion_matrix": [
+      [
+        8158,
+        1038
+      ],
+      [
+        23,
+        27122
+      ]
+    ],
+    "classification_report": "              precision    recall  f1-score   support\n\n      Benign       1.00      0.89      0.94      9196\n      Ataque       0.96      1.00      0.98     27145\n\n    accuracy                           0.97     36341\n   macro avg       0.98      0.94      0.96     36341\nweighted avg       0.97      0.97      0.97     36341\n"
+  }
+]

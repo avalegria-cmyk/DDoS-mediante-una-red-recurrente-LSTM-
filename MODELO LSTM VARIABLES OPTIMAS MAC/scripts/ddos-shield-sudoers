@@ -1,0 +1,2 @@
+www-data ALL=(root) NOPASSWD: /usr/sbin/tcpdump
+www-data ALL=(root) NOPASSWD: /usr/local/sbin/ddos-block-ip

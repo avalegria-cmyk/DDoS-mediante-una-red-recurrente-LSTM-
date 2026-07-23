@@ -1,0 +1,12 @@
+{
+  "model_kind": "lstm",
+  "timesteps": 10,
+  "input_shape": [
+    10,
+    47
+  ],
+  "feature_count": 47,
+  "scaler": "scaler_lstm_gru.pkl",
+  "feature_cols": "feature_cols_lstm_gru.json",
+  "source_info": "info_experimento_lstm_gru.json"
+}

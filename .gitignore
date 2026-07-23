@@ -10,9 +10,8 @@ logs/
 .run/
 *.log
 
-MODELO LSTM VARIABLES OPTIMAS MAC/data/
-MODELO LSTM VARIABLES OPTIMAS MAC/.venv/
-MODELO LSTM VARIABLES OPTIMAS MAC/__pycache__/
+data/
+.venv/
 
 *.pcap
 *.partial

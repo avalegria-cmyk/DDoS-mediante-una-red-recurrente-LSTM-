@@ -1,11 +1,11 @@
-# Modelo LSTM Variables Optimas Mac
+# DDoS Mediante una Red Recurrente LSTM
 
 Sistema de deteccion DoS/DDoS para macOS basado en un modelo LSTM reentrenado con variables que pueden obtenerse desde trafico real. Esta version no depende del modelo original de 77 caracteristicas del dataset; usa 47 caracteristicas operacionalmente disponibles y una capa complementaria por tasa para pruebas reales con trafico HTTP.
 
 ## Contenido
 
 ```text
-MODELO LSTM VARIABLES OPTIMAS MAC/
+.
 ├── app.py                         # API FastAPI, dashboard y motor de deteccion
 ├── modelo/                        # Modelo LSTM final usado por el sistema
 ├── modelos_lstm_reales_47/        # Copia de artefactos del entrenamiento
@@ -53,21 +53,21 @@ La version de 47 variables mantiene el enfoque LSTM de la investigacion y conser
 Crear el entorno virtual local e instalar dependencias:
 
 ```bash
-cd "/Users/adonisalegria/Documents/Universidad/Seguridad/ENTREGA V2/MODELO LSTM VARIABLES OPTIMAS MAC"
+cd "/Users/adonisalegria/Documents/Universidad/Seguridad/ENTREGA V2"
 
 python3 -m venv .venv
 .venv/bin/pip install --upgrade pip
 .venv/bin/pip install -r requirements.txt
 ```
 
-Los scripts tambien son compatibles con el entorno antiguo `../implementacion/.venv` si existe, pero para Git se recomienda usar `.venv` dentro de esta carpeta.
+Los scripts tambien son compatibles con el entorno antiguo `../implementacion/.venv` si existe, pero para Git se recomienda usar `.venv` dentro del repositorio.
 
 ## Prueba rapida del modelo
 
 Esta prueba no captura trafico. Solo valida que el modelo, scaler y columnas carguen correctamente.
 
 ```bash
-cd "/Users/adonisalegria/Documents/Universidad/Seguridad/ENTREGA V2/MODELO LSTM VARIABLES OPTIMAS MAC"
+cd "/Users/adonisalegria/Documents/Universidad/Seguridad/ENTREGA V2"
 
 .venv/bin/python scripts/probar_pipeline_lstm_reales.py
 ```
@@ -93,7 +93,7 @@ Usa este modo cuando el atacante y la victima estan en la misma Mac. Captura por
 ```bash
 cd "/Users/adonisalegria/Documents/Universidad/Seguridad/ENTREGA V2"
 
-sudo "MODELO LSTM VARIABLES OPTIMAS MAC/scripts/iniciar_admin_mac_lstm_local.sh"
+sudo scripts/iniciar_admin_mac_lstm_local.sh
 ```
 
 Luego abre el dashboard y pulsa **Iniciar monitoreo**.
@@ -113,7 +113,7 @@ Usa este modo cuando otra computadora de la red ataca la IP del Mac. Captura por
 ```bash
 cd "/Users/adonisalegria/Documents/Universidad/Seguridad/ENTREGA V2"
 
-sudo "MODELO LSTM VARIABLES OPTIMAS MAC/scripts/iniciar_admin_mac_lstm.sh"
+sudo scripts/iniciar_admin_mac_lstm.sh
 ```
 
 Luego, desde la otra maquina:

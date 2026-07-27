@@ -5,6 +5,8 @@ import json
 import os
 import platform
 import shlex
+import gzip
+import shutil
 import subprocess
 import threading
 import time
@@ -24,15 +26,18 @@ from pydantic import BaseModel
 
 
 BASE_DIR = Path(__file__).resolve().parent
-MODEL_DIR = Path(os.getenv("MODEL_DIR", BASE_DIR / "modelo"))
+MODEL_DIR = Path(os.getenv("MODEL_DIR", BASE_DIR / "modelo_rf_multiclase"))
 FLOW_DIR = Path(os.getenv("FLOW_DIR", BASE_DIR / "data" / "flows"))
 STATE_DIR = Path(os.getenv("STATE_DIR", BASE_DIR / "data" / "state"))
 WEB_DIR = Path(os.getenv("WEB_DIR", BASE_DIR / "web"))
 
-MODEL_KIND = os.getenv("MODEL_KIND", "lstm").lower()
+MODEL_KIND = os.getenv("MODEL_KIND", "xgboost").lower()
 XGBOOST_MODEL_PATH = MODEL_DIR / "xgboost.pkl"
+XGBOOST_MODEL_GZ_PATH = MODEL_DIR / "xgboost.pkl.gz"
 PREPROCESSORS_PATH = MODEL_DIR / "preprocessors.pkl"
 XGBOOST_FEATURE_COLS_PATH = MODEL_DIR / "feature_cols.json"
+CLASS_LABELS_PATH = MODEL_DIR / "class_labels.json"
+MODEL_INFO_PATH = MODEL_DIR / "info_rf_compacto.json"
 LSTM_MODEL_PATH = MODEL_DIR / os.getenv("LSTM_MODEL_FILE", "modelo_lstm_ddos.keras")
 GRU_MODEL_PATH = MODEL_DIR / "modelo_gru_ddos.keras"
 LSTM_SCALER_PATH = MODEL_DIR / "scaler_lstm_gru.pkl"
@@ -52,18 +57,22 @@ LOCAL_NOISE_PORTS = {
     if port.strip().isdigit()
 }
 RATE_ATTACK_PPS = float(os.getenv("RATE_ATTACK_PPS", "1000"))
+RATE_ATTACK_ANY_PORT = os.getenv("RATE_ATTACK_ANY_PORT", "true").lower() == "true"
+MODEL_ATTACK_MIN_PPS = float(os.getenv("MODEL_ATTACK_MIN_PPS", "10"))
 PROTECTED_PORTS = {
     int(port.strip())
     for port in os.getenv("PROTECTED_PORTS", "80,443,8080").split(",")
     if port.strip().isdigit()
 }
-DEFAULT_CAPTURE_INTERFACE = "auto" if platform.system() == "Windows" else "enp0s3"
+DEFAULT_CAPTURE_INTERFACE = "auto" if platform.system() == "Windows" else "en0"
 CAPTURE_INTERFACE = os.getenv("CAPTURE_INTERFACE", DEFAULT_CAPTURE_INTERFACE)
 CAPTURE_SECONDS = int(os.getenv("CAPTURE_SECONDS", "15"))
 CAPTURE_USE_SUDO = os.getenv("CAPTURE_USE_SUDO", "true").lower() == "true"
 PCAP_DIR = Path(os.getenv("PCAP_DIR", BASE_DIR / "data" / "pcap"))
 CICFLOWMETER_CMD = os.getenv("CICFLOWMETER_CMD", "")
 CAPTURE_COMMAND = os.getenv("CAPTURE_COMMAND", "")
+PROCESS_EXISTING_FILES = os.getenv("PROCESS_EXISTING_FILES", "false").lower() == "true"
+KEEP_CAPTURE_FILES = os.getenv("KEEP_CAPTURE_FILES", "false").lower() == "true"
 
 IP_COLUMNS = ["Src IP", "Source IP", "src_ip", "SourceIP", "Source", "source_ip"]
 DST_COLUMNS = ["Dst IP", "Destination IP", "dst_ip", "DestinationIP", "Destination", "dest_ip"]
@@ -205,6 +214,12 @@ class DetectorState:
             }
             self.blocked_ips.insert(0, item)
 
+    def remove_block(self, ip: str) -> bool:
+        with self.lock:
+            initial_count = len(self.blocked_ips)
+            self.blocked_ips = [item for item in self.blocked_ips if item["ip"] != ip]
+            return len(self.blocked_ips) != initial_count
+
 
 state = DetectorState()
 
@@ -220,10 +235,23 @@ if MODEL_KIND in {"lstm", "gru"}:
     preprocessors = None
 else:
     timesteps = 1
+    if not XGBOOST_MODEL_PATH.exists() and XGBOOST_MODEL_GZ_PATH.exists():
+        with gzip.open(XGBOOST_MODEL_GZ_PATH, "rb") as source, XGBOOST_MODEL_PATH.open("wb") as target:
+            shutil.copyfileobj(source, target)
     model = joblib.load(XGBOOST_MODEL_PATH)
     preprocessors = joblib.load(PREPROCESSORS_PATH)
     feature_cols = json.loads(XGBOOST_FEATURE_COLS_PATH.read_text(encoding="utf-8"))
     scaler_lstm = None
+
+model_metadata = {}
+if MODEL_INFO_PATH.exists():
+    model_metadata = json.loads(MODEL_INFO_PATH.read_text(encoding="utf-8"))
+
+class_labels: list[str] = []
+if CLASS_LABELS_PATH.exists():
+    class_labels = json.loads(CLASS_LABELS_PATH.read_text(encoding="utf-8"))
+elif hasattr(model, "classes_"):
+    class_labels = [str(item) for item in model.classes_.tolist()]
 
 app = FastAPI(title="DDoS Shield Real Detector")
 app.add_middleware(
@@ -243,6 +271,8 @@ def startup() -> None:
     FLOW_DIR.mkdir(parents=True, exist_ok=True)
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     PCAP_DIR.mkdir(parents=True, exist_ok=True)
+    if not PROCESS_EXISTING_FILES:
+        state.processed_files.update(str(path) for path in FLOW_DIR.glob("*.csv"))
     thread = threading.Thread(target=watch_flow_directory, daemon=True)
     thread.start()
     capture_thread = threading.Thread(target=capture_loop, daemon=True)
@@ -273,6 +303,7 @@ def health() -> dict[str, Any]:
         "platform": platform.system(),
         "cicflowmeter_configured": bool(CICFLOWMETER_CMD),
         "last_error": state.last_error,
+        "whitelist_ips": sorted(WHITELIST_IPS),
     }
 
 
@@ -321,14 +352,44 @@ def block_ip(request: BlockRequest) -> dict[str, Any]:
     return {"ok": True, "ip": request.ip}
 
 
+@app.delete("/api/blocked-ips/{ip}")
+def unblock_ip(ip: str) -> dict[str, Any]:
+    validate_ip(ip)
+    removed = state.remove_block(ip)
+    return {"ok": True, "ip": ip, "removed": removed}
+
+
 @app.get("/api/model")
 def model_info() -> dict[str, Any]:
+    if MODEL_KIND in {"lstm", "gru"}:
+        pipeline = [
+            f"Capturar trafico real del servidor {platform.system()}",
+            "Convertir paquetes a flujos con CICFlowMeter o extractor compatible",
+            "Generar CSV con las mismas columnas del entrenamiento",
+            "Aplicar el scaler_lstm_gru.pkl exportado desde el entrenamiento LSTM",
+            f"Acumular {timesteps} flujos por IP para crear un tensor (1, {timesteps}, {len(feature_cols)})",
+            f"Enviar la ventana temporal al modelo {MODEL_KIND.upper()} entrenado",
+            "Mostrar IP atacante y aplicar bloqueo si AUTO_BLOCK=true",
+        ]
+    else:
+        pipeline = [
+            f"Capturar trafico real del servidor {platform.system()}",
+            "Convertir paquetes a flujos con CICFlowMeter o extractor compatible",
+            "Normalizar nombres de columnas snake_case a formato CIC-DDoS2019",
+            f"Aplicar imputador y scaler sobre {len(feature_cols)} caracteristicas",
+            "Enviar cada flujo al Random Forest multiclase",
+            "Mostrar clase predicha y bloquear si la probabilidad de ataque supera el umbral",
+        ]
+
     return {
         "metadata": {
             "xgboost": {
                 "available": XGBOOST_MODEL_PATH.exists(),
                 "path": str(XGBOOST_MODEL_PATH),
                 "featureCount": len(feature_cols),
+                "modelType": type(model).__name__,
+                "classLabels": class_labels,
+                "modelMetadata": model_metadata,
             },
             "lstm": {
                 "available": LSTM_MODEL_PATH.exists() and LSTM_SCALER_PATH.exists(),
@@ -350,15 +411,7 @@ def model_info() -> dict[str, Any]:
             },
             "activeModel": MODEL_KIND,
         },
-        "pipeline": [
-            f"Capturar trafico real del servidor {platform.system()}",
-            "Convertir paquetes a flujos con CICFlowMeter o extractor compatible",
-            "Generar CSV con las mismas columnas del entrenamiento",
-            "Aplicar el scaler_lstm_gru.pkl exportado desde el entrenamiento LSTM",
-            f"Acumular {timesteps} flujos por IP para crear un tensor (1, {timesteps}, 77)",
-            f"Enviar la ventana temporal al modelo {MODEL_KIND.upper()} entrenado",
-            "Mostrar IP atacante y aplicar bloqueo si AUTO_BLOCK=true",
-        ],
+        "pipeline": pipeline,
         "requiredFeatures": feature_cols,
     }
 
@@ -402,9 +455,14 @@ def watch_flow_directory() -> None:
             for csv_path in sorted(FLOW_DIR.glob("*.csv")):
                 if str(csv_path) in state.processed_files:
                     continue
+                if csv_path.stat().st_size <= 0:
+                    state.processed_files.add(str(csv_path))
+                    cleanup_capture_files(csv_path)
+                    continue
                 process_flow_file(csv_path)
                 state.processed_files.add(str(csv_path))
                 state.files_processed += 1
+                cleanup_capture_files(csv_path)
         except Exception as exc:
             state.last_error = str(exc)
         time.sleep(SCAN_INTERVAL_SECONDS)
@@ -530,21 +588,82 @@ def process_flow_file(csv_path: Path) -> None:
         process_xgboost_file(csv_path, df)
 
 
+def cleanup_capture_files(csv_path: Path) -> None:
+    if KEEP_CAPTURE_FILES:
+        return
+
+    csv_path.unlink(missing_ok=True)
+    if csv_path.name.startswith("flows-"):
+        pcap_name = "captura-" + csv_path.name.removeprefix("flows-").removesuffix(".csv") + ".pcap"
+        (PCAP_DIR / pcap_name).unlink(missing_ok=True)
+
+
 def process_xgboost_file(csv_path: Path, df: pd.DataFrame) -> None:
     records = df.to_dict(orient="records")
     X = prepare_xgboost_features(df)
-    probabilities = model.predict_proba(X)[:, 1]
-    for row, probability in zip(records, probabilities):
-        probability = float(probability)
-        risk = round(probability * 100)
+    probability_matrix = model.predict_proba(X)
+    multiclass_labels = class_labels if "Benign" in class_labels and len(class_labels) > 2 else []
+
+    for row, probabilities in zip(records, probability_matrix):
+        probabilities = np.asarray(probabilities, dtype=float)
+        class_probability_map = {
+            str(label): round(float(prob), 6)
+            for label, prob in zip(class_labels, probabilities)
+        }
+
+        if multiclass_labels:
+            predicted_index = int(np.argmax(probabilities))
+            predicted_label = str(multiclass_labels[predicted_index])
+            attack_candidates = [
+                (str(label), float(prob))
+                for label, prob in zip(multiclass_labels, probabilities)
+                if str(label) != "Benign"
+            ]
+            top_attack_label, top_attack_class_probability = max(
+                attack_candidates,
+                key=lambda item: item[1],
+                default=("DDoS/DoS", 0.0),
+            )
+            attack_probability = float(
+                sum(prob for _, prob in attack_candidates)
+            )
+            probability = attack_probability
+            attack = predicted_label if predicted_label != "Benign" else top_attack_label
+        else:
+            probability = float(probabilities[1])
+            predicted_label = "DDoS/DoS" if probability >= PREDICTION_THRESHOLD else "Benign"
+            attack = predicted_label
+            top_attack_class_probability = probability
+
         src_ip = pick_value(row, IP_COLUMNS, "desconocida")
         dst_ip = pick_value(row, DST_COLUMNS, "servidor")
         port = pick_value(row, PORT_COLUMNS, 0)
         event_time = pick_value(row, TIME_COLUMNS, now_time())
         pps = safe_number(row.get("Flow Packets/s", 0))
         bps = safe_number(row.get("Flow Bytes/s", 0))
-        attack = "DDoS/DoS" if probability >= PREDICTION_THRESHOLD else "Benign"
-        decision = "Bloquear" if probability >= PREDICTION_THRESHOLD else "Permitir"
+
+        rate_attack = is_rate_attack_flow(port, pps)
+        local_noise = is_local_noise_flow(row, dst_ip, port, pps, bps)
+        low_rate_model_noise = pps < MODEL_ATTACK_MIN_PPS and not rate_attack
+        risk = round(probability * 100)
+        if rate_attack:
+            rate_risk = min(100, round((pps / max(RATE_ATTACK_PPS, 1)) * 65))
+            risk = max(risk, rate_risk)
+
+        decision = "Bloquear" if (probability >= PREDICTION_THRESHOLD and not low_rate_model_noise) or rate_attack else "Permitir"
+        if local_noise:
+            probability = 0.0
+            risk = 0
+            attack = "Ruido local ignorado"
+            decision = "Permitir"
+        elif low_rate_model_noise:
+            attack = "Benign"
+            decision = "Permitir"
+            risk = min(risk, 30)
+        elif rate_attack and probability < PREDICTION_THRESHOLD:
+            attack = "DDoS/DoS por tasa"
+        elif decision == "Permitir":
+            attack = "Benign"
 
         event = {
             "id": f"{csv_path.name}-{len(state.traffic)}-{time.time_ns()}",
@@ -560,11 +679,16 @@ def process_xgboost_file(csv_path: Path, df: pd.DataFrame) -> None:
             "decision": decision,
             "probability": round(probability, 6),
             "sourceFile": csv_path.name,
+            "modelKind": MODEL_KIND,
+            "predictedClass": predicted_label,
+            "topAttackClass": attack if attack != "DDoS/DoS por tasa" else "rate-rule",
+            "topAttackClassProbability": round(float(top_attack_class_probability), 6),
+            "classProbabilities": class_probability_map,
         }
         state.add_event(event)
 
         if decision == "Bloquear" and src_ip != "desconocida" and not is_whitelisted(str(src_ip)):
-            reason = f"Modelo XGBoost detecto ataque con probabilidad {risk}%"
+            reason = f"Modelo {MODEL_KIND.upper()} detecto {attack} con probabilidad {risk}%"
             state.add_block(str(src_ip), reason, risk, "model")
             if AUTO_BLOCK:
                 run_block_script(str(src_ip))
@@ -720,7 +844,11 @@ def is_local_noise_flow(row: dict[str, Any], dst_ip: Any, port: Any, pps: float,
 
 
 def is_rate_attack_flow(port: Any, pps: float) -> bool:
-    return int(safe_number(port)) in PROTECTED_PORTS and pps >= RATE_ATTACK_PPS
+    if pps < RATE_ATTACK_PPS:
+        return False
+    if RATE_ATTACK_ANY_PORT:
+        return True
+    return int(safe_number(port)) in PROTECTED_PORTS
 
 
 def is_non_unicast_ip(value: str) -> bool:

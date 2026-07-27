@@ -1,187 +1,93 @@
-# DDoS Mediante una Red Recurrente LSTM
+# Detector DDoS RF 11 con victima HTTP
 
-Sistema de deteccion DoS/DDoS para macOS basado en un modelo LSTM reentrenado con variables que pueden obtenerse desde trafico real. Esta version no depende del modelo original de 77 caracteristicas del dataset; usa 47 caracteristicas operacionalmente disponibles y una capa complementaria por tasa para pruebas reales con trafico HTTP.
+Sistema de deteccion DoS/DDoS para pruebas reales en macOS. Esta version usa un modelo Random Forest multiclase de 11 caracteristicas y levanta dos servicios separados:
 
-## Contenido
-
-```text
-.
-├── app.py                         # API FastAPI, dashboard y motor de deteccion
-├── modelo/                        # Modelo LSTM final usado por el sistema
-├── modelos_lstm_reales_47/        # Copia de artefactos del entrenamiento
-├── scripts/
-│   ├── iniciar_admin_mac_lstm.sh          # Captura real por red, interfaz en0
-│   ├── iniciar_admin_mac_lstm_local.sh    # Prueba local, interfaz lo0
-│   ├── convertir_pcap.py                  # Conversor PCAP -> CSV de flujos
-│   └── probar_pipeline_lstm_reales.py     # Prueba rapida del pipeline
-├── web/                           # Interfaz del dashboard
-├── data/                          # PCAPs, CSVs y estado generado en ejecucion
-└── requirements.txt
-```
+- `4100`: dashboard/API del detector.
+- `8080`: servidor victima desde la carpeta `victima/`.
 
 ## Modelo activo
 
-- Arquitectura: LSTM.
-- Archivo del modelo: `modelo/modelo_lstm_ddos.keras`.
-- Scaler: `modelo/scaler_lstm_gru.pkl`.
-- Variables: `modelo/feature_cols_lstm_gru.json`.
-- Metadata: `modelo/info_experimento_lstm_gru.json`.
-- Entrada esperada: ventanas de `10` flujos con `47` caracteristicas.
-- Umbral de IA: `0.65`.
+- Tipo cargado por la app: `MODEL_KIND=xgboost`
+- Modelo real: `RandomForestClassifier`
+- Carpeta: `modelo_rf_multiclase`
+- Variables: 11
+- Clases: `Benign`, `DNS`, `LDAP`, `MSSQL`, `NTP`, `NetBIOS`, `Portmap`, `SNMP`, `Syn`, `TFTP`, `UDP`, `UDPLag`, `WebDDoS`
 
-La columna `IA` del dashboard muestra la probabilidad directa del LSTM. Si aparece `0% IA` pero el evento dice `DDoS/DoS por tasa`, significa que el ataque fue marcado por la regla complementaria de trafico excesivo contra el puerto protegido.
+El nombre `xgboost.pkl` se mantiene solo por compatibilidad con `app.py`.
 
-## Por que 47 variables
-
-El dataset CIC-DDoS2019 trae 77 caracteristicas, pero en trafico real no siempre se pueden obtener todas de forma consistente. Este sistema usa variables calculables desde paquetes capturados: protocolo, duracion, conteos de paquetes, bytes, tasas, tiempos entre paquetes, tamanos y banderas disponibles.
-
-Resultado comparativo del entrenamiento:
-
-- LSTM original con 77 variables: F1 `0.981575`.
-- LSTM con 47 variables reales: F1 `0.980815`.
-- LSTM con 20 variables seleccionadas: F1 `0.959859`.
-
-La version de 47 variables mantiene el enfoque LSTM de la investigacion y conserva un rendimiento muy cercano al modelo de 77 variables.
-
-## Requisitos
-
-- macOS.
-- Python 3.12.
-- Permisos de administrador para capturar paquetes con `tcpdump`.
-- Servidor victima escuchando en el puerto `8080`.
-
-Crear el entorno virtual local e instalar dependencias:
-
-```bash
-cd "/Users/adonisalegria/Documents/Universidad/Seguridad/ENTREGA V2"
-
-python3 -m venv .venv
-.venv/bin/pip install --upgrade pip
-.venv/bin/pip install -r requirements.txt
-```
-
-Los scripts tambien son compatibles con el entorno antiguo `../implementacion/.venv` si existe, pero para Git se recomienda usar `.venv` dentro del repositorio.
-
-## Prueba rapida del modelo
-
-Esta prueba no captura trafico. Solo valida que el modelo, scaler y columnas carguen correctamente.
-
-```bash
-cd "/Users/adonisalegria/Documents/Universidad/Seguridad/ENTREGA V2"
-
-.venv/bin/python scripts/probar_pipeline_lstm_reales.py
-```
-
-Salida esperada parecida:
+## Estructura principal
 
 ```text
-OK LSTM real: 10 flujos, 47 variables, probabilidad ...
+.
+├── app.py                    # API FastAPI, dashboard y motor de deteccion
+├── web/                      # Dashboard del detector
+├── victima/                  # Pagina/servidor victima para el puerto 8080
+├── modelo_rf_multiclase/     # Artefactos del Random Forest de 11 variables
+├── scripts/
+│   ├── iniciar_admin_mac_rf11.sh
+│   ├── iniciar_local_rf11.sh
+│   ├── apagar_rf11.sh
+│   └── convertir_pcap.py
+└── requirements_rf11.txt
 ```
 
-## Ejecutar el dashboard
+## Arranque con captura real en macOS
 
-El dashboard queda disponible en:
+```bash
+cd '/ruta/al/proyecto'
+./scripts/instalar_entorno.sh
+sudo CAPTURE_INTERFACE=en0 ./scripts/iniciar_admin_mac_rf11.sh
+```
+
+Abre el detector:
 
 ```text
 http://127.0.0.1:4100
 ```
 
-### Modo local: ataque desde el mismo Mac
+La victima queda en:
 
-Usa este modo cuando el atacante y la victima estan en la misma Mac. Captura por `lo0`.
-
-```bash
-cd "/Users/adonisalegria/Documents/Universidad/Seguridad/ENTREGA V2"
-
-sudo scripts/iniciar_admin_mac_lstm_local.sh
+```text
+http://127.0.0.1:8080
 ```
 
-Luego abre el dashboard y pulsa **Iniciar monitoreo**.
-
-Ejemplo de ataque local con ApacheBench:
+Por defecto, los PCAP y CSV de captura se eliminan automaticamente despues de procesarse. Si necesitas conservarlos para depuracion:
 
 ```bash
-ab -n 5000 -c 100 http://127.0.0.1:8080/api/ping
+sudo KEEP_CAPTURE_FILES=true ./scripts/iniciar_admin_mac_rf11.sh
 ```
 
-En este modo se usa `RATE_ATTACK_PPS=500` para que la prueba local con `ab` se marque claramente como `DDoS/DoS por tasa`.
-
-### Modo red: ataque desde otra maquina
-
-Usa este modo cuando otra computadora de la red ataca la IP del Mac. Captura por `en0`.
+## Arranque local sin captura
 
 ```bash
-cd "/Users/adonisalegria/Documents/Universidad/Seguridad/ENTREGA V2"
-
-sudo scripts/iniciar_admin_mac_lstm.sh
+cd '/ruta/al/proyecto'
+./scripts/iniciar_local_rf11.sh
 ```
 
-Luego, desde la otra maquina:
+## Prueba desde Windows sin ApacheBench
+
+Cambia `IP_DEL_MAC` por la IP real del equipo macOS:
+
+```powershell
+$u="http://IP_DEL_MAC:8080/"; 1..10000 | ForEach-Object -Parallel { Invoke-WebRequest -Uri $using:u -UseBasicParsing | Out-Null } -ThrottleLimit 200
+```
+
+## Lista blanca
+
+La lista blanca se configura con `WHITELIST_IPS`. Por defecto:
 
 ```bash
-ab -n 5000 -c 100 http://IP_DEL_MAC:8080/api/ping
+WHITELIST_IPS="127.0.0.1"
 ```
 
-Ejemplo si el Mac tiene IP `192.168.0.105`:
+Ejemplo:
 
 ```bash
-ab -n 5000 -c 100 http://192.168.0.105:8080/api/ping
+sudo WHITELIST_IPS="127.0.0.1,172.64.148.235,17.248.201.71" CAPTURE_INTERFACE=en0 ./scripts/iniciar_admin_mac_rf11.sh
 ```
 
-## Apagar el sistema
-
-Buscar procesos activos:
+## Apagar
 
 ```bash
-ps aux | grep -E "uvicorn app:app|tcpdump|MODELO LSTM"
+sudo ./scripts/apagar_rf11.sh
 ```
-
-Apagar detector y captura:
-
-```bash
-sudo kill PID_DETECTOR PID_TCPDUMP
-```
-
-Si tambien esta encendido el servidor victima:
-
-```bash
-kill PID_VICTIMA
-```
-
-## Variables de configuracion
-
-Estas variables pueden ajustarse antes de ejecutar el script:
-
-```bash
-export PREDICTION_THRESHOLD="0.65"   # Umbral del LSTM
-export RATE_ATTACK_PPS="1000"        # Umbral por tasa en modo red
-export PROTECTED_PORTS="80,443,8080" # Puertos protegidos
-export AUTO_BLOCK="false"            # Detectar sin bloquear firewall
-export CAPTURE_SECONDS="15"          # Duracion de cada captura
-```
-
-En modo local, `scripts/iniciar_admin_mac_lstm_local.sh` fuerza:
-
-```bash
-CAPTURE_INTERFACE="lo0"
-RATE_ATTACK_PPS="500"
-```
-
-En modo red, `scripts/iniciar_admin_mac_lstm.sh` usa:
-
-```bash
-CAPTURE_INTERFACE="en0"
-AUTO_BLOCK="false"
-```
-
-## Notas importantes
-
-- `hping3` no viene instalado por defecto en macOS. Para la demo principal se recomienda `ab` porque ataca directamente el servidor victima HTTP en `8080`.
-- Si el ataque se lanza desde el mismo Mac, se debe usar `lo0`; si se lanza desde otra maquina, se debe usar `en0`.
-- Un PCAP vacio en `lo0` puede ocurrir cuando no hubo trafico durante una ventana de captura. El sistema lo ignora para no detener el monitoreo.
-- `127.0.0.1` esta en whitelist para evitar bloqueo local accidental. En pruebas locales puede detectarse DDoS, pero no necesariamente aparecer como IP bloqueada.
-- `AUTO_BLOCK=false` significa que el sistema detecta y registra eventos, pero no modifica el firewall.
-
-## Frase sugerida para documentacion academica
-
-Se reentreno el modelo LSTM con 47 caracteristicas operacionalmente disponibles en trafico real, eliminando dependencia de campos que no siempre se obtienen de forma consistente. El sistema conserva la entrada temporal de 10 flujos y combina la probabilidad del LSTM con una regla operacional por tasa para detectar rafagas HTTP reales contra puertos protegidos.

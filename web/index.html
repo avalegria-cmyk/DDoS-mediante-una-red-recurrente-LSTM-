@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>DDoS Shield Real</title>
+    <title>RF 11 Multiclase | DDoS Shield</title>
     <style>
       :root {
         color: #eef7f2;
@@ -108,7 +108,7 @@
       }
       .blocked-row {
         display: grid;
-        grid-template-columns: minmax(140px, 1fr) minmax(240px, 2fr) 90px 100px;
+        grid-template-columns: minmax(140px, 1fr) minmax(220px, 2fr) 90px 100px 112px;
         gap: 12px;
         align-items: center;
         min-height: 44px;
@@ -116,6 +116,15 @@
         padding: 10px 12px;
         border-radius: 8px;
         background: rgba(255,255,255,.04);
+      }
+      .unblock-btn {
+        min-height: 34px;
+        border: 0;
+        border-radius: 8px;
+        background: #ffaaa4;
+        color: #2a0504;
+        font-weight: 900;
+        cursor: pointer;
       }
       .mono { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; color: #acc3b6; }
       .badge {
@@ -209,7 +218,7 @@
         .row { grid-template-columns: 92px minmax(0, 1fr) 76px 76px; }
         .row span:nth-child(3), .row span:nth-child(4), .row span:nth-child(5) { display: none; }
         .blocked-row { grid-template-columns: minmax(0, 1fr) 82px; }
-        .blocked-row span:nth-child(2), .blocked-row span:nth-child(4) { display: none; }
+        .blocked-row span:nth-child(2), .blocked-row span:nth-child(4), .blocked-row button { display: none; }
       }
       @media (max-width: 560px) {
         main { width: calc(100% - 14px); padding-bottom: calc(154px + env(safe-area-inset-bottom)); }
@@ -237,8 +246,8 @@
     <main>
       <header>
         <div>
-          <p class="eyebrow">Trafico real del servidor</p>
-          <h1>DDoS Shield Real</h1>
+          <p class="eyebrow">Random Forest multiclase | 11 caracteristicas</p>
+          <h1>RF 11 DDoS Shield</h1>
         </div>
         <div class="status" id="status">Cargando</div>
       </header>
@@ -271,7 +280,7 @@
           <div class="model-grid">
             <article class="panel">
               <div class="panel-head">
-                <h2>Modelo LSTM</h2>
+                <h2>Modelo RF 11</h2>
                 <span class="mono" id="modelShape">Cargando</span>
               </div>
               <div class="pipeline" id="pipeline"></div>
@@ -334,7 +343,7 @@
         document.getElementById("blockedCount").textContent = overview.blockedCount;
         document.getElementById("blockedTotal").textContent = overview.blockedCount;
         document.getElementById("health").textContent = `${health.mode} | threshold ${health.threshold}`;
-        document.getElementById("modelShape").textContent = `${health.timesteps} x ${health.feature_count} variables`;
+        document.getElementById("modelShape").textContent = `${health.feature_count} caracteristicas`;
 
         const trafficItems = traffic.traffic.slice(0, 18);
         document.getElementById("trafficRows").innerHTML = trafficItems.length ? trafficItems.map(item => `
@@ -356,6 +365,7 @@
             <span>${item.reason}</span>
             <span class="${badgeClass(item.risk)}">${item.risk}%</span>
             <span class="mono">${item.since}</span>
+            <button class="unblock-btn" onclick="unblockIp('${item.ip}')">Desbloquear</button>
           </div>
         `).join("") : emptyState("No hay IPs bloqueadas o detectadas.");
 
@@ -365,6 +375,7 @@
           <div class="control-box"><span>Interfaz</span><strong>${capture.interface}</strong></div>
           <div class="control-box"><span>CICFlowMeter</span><strong>${capture.cicflowmeterConfigured ? "Configurado" : "No configurado"}</strong></div>
           <div class="control-box"><span>Ultimo CSV</span><strong>${capture.lastFile || "Pendiente"}</strong></div>
+          <div class="control-box"><span>Lista blanca</span><strong>${(health.whitelist_ips || []).join(", ") || "Sin IPs"}</strong></div>
           <div class="control-box"><span>Errores</span><strong>${capture.lastError || "Sin errores"}</strong></div>
         `;
       }
@@ -387,6 +398,11 @@
 
       async function stopCapture() {
         await fetch("/api/capture/stop", { method: "POST" });
+        refresh();
+      }
+
+      async function unblockIp(ip) {
+        await fetch(`/api/blocked-ips/${encodeURIComponent(ip)}`, { method: "DELETE" });
         refresh();
       }
 

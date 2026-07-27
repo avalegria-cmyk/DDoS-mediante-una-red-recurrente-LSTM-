@@ -15,3 +15,5 @@ data/
 
 *.pcap
 *.partial
+
+modelo_rf_multiclase/xgboost.pkl

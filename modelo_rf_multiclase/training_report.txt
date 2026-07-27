@@ -1,0 +1,26 @@
+REPORTE RANDOM FOREST COMPACTO DDoS
+Dataset: /Users/adonisalegria/Documents/Universidad/Seguridad/Proyecto/PRUEBA3/archive
+Filas train: 102730
+Filas test: 44028
+Features: 11
+Matriz de confusion multiclase: 13x13
+
+              precision    recall  f1-score   support
+
+      Benign     0.9942    0.9864    0.9903     13260
+         DNS     0.6253    0.4214    0.5035      1101
+        LDAP     0.5657    0.7809    0.6561      1004
+       MSSQL     0.8971    0.9386    0.9174      4413
+         NTP     0.9805    0.9909    0.9857      4063
+     NetBIOS     0.6548    0.7426    0.6960       373
+     Portmap     0.4167    0.4146    0.4156       205
+        SNMP     0.6671    0.6687    0.6679       815
+         Syn     0.9869    0.9706    0.9787      4587
+        TFTP     0.9967    0.9953    0.9960      3644
+         UDP     0.9236    0.9584    0.9407      7870
+      UDPLag     0.9116    0.7550    0.8260      2678
+     WebDDoS     0.1190    0.3333    0.1754        15
+
+    accuracy                         0.9324     44028
+   macro avg     0.7492    0.7659    0.7499     44028
+weighted avg     0.9341    0.9324    0.9318     44028

@@ -1,0 +1,15 @@
+[
+  "Benign",
+  "DNS",
+  "LDAP",
+  "MSSQL",
+  "NTP",
+  "NetBIOS",
+  "Portmap",
+  "SNMP",
+  "Syn",
+  "TFTP",
+  "UDP",
+  "UDPLag",
+  "WebDDoS"
+]

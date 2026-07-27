@@ -49,7 +49,17 @@ AUTO_BLOCK = os.getenv("AUTO_BLOCK", "false").lower() == "true"
 BLOCK_SCRIPT = os.getenv("BLOCK_SCRIPT", "/usr/local/sbin/ddos-block-ip")
 SCAN_INTERVAL_SECONDS = float(os.getenv("SCAN_INTERVAL_SECONDS", "2"))
 MAX_EVENTS = int(os.getenv("MAX_EVENTS", "300"))
-WHITELIST_IPS = {ip.strip() for ip in os.getenv("WHITELIST_IPS", "127.0.0.1").split(",") if ip.strip()}
+DEFAULT_WHITELIST_IPS = ",".join(
+    [
+        "127.0.0.1",
+        "17.248.201.71",   # Apple
+        "57.144.199.33",   # Meta/Facebook
+        "104.18.32.47",    # Cloudflare
+        "140.82.114.26",   # GitHub
+        "172.64.148.235",  # Cloudflare
+    ]
+)
+WHITELIST_IPS = {ip.strip() for ip in os.getenv("WHITELIST_IPS", DEFAULT_WHITELIST_IPS).split(",") if ip.strip()}
 IGNORE_LOCAL_NOISE = os.getenv("IGNORE_LOCAL_NOISE", "true").lower() == "true"
 LOCAL_NOISE_PORTS = {
     int(port.strip())

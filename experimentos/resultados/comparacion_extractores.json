@@ -1,0 +1,159 @@
+{
+  "capturas": {
+    "inundacion_http": {
+      "flujos_java": 8877,
+      "flujos_python": 6589,
+      "emparejados": 6589
+    },
+    "legitimo": {
+      "flujos_java": 151,
+      "flujos_python": 81,
+      "emparejados": 81
+    }
+  },
+  "variables": {
+    "Flow Duration": {
+      "n": 6670,
+      "mediana_java": 28.0,
+      "mediana_python": 28.0,
+      "error_relativo_mediano": 0.0,
+      "error_relativo_p90": 0.2666999578911002,
+      "fraccion_dentro_del_1pct": 0.6523238380809595,
+      "fraccion_dentro_del_10pct": 0.7865067466266866,
+      "razon_mediana_python_sobre_java": 1.0,
+      "correlacion_spearman": 0.992267576235965
+    },
+    "Total Fwd Packets": {
+      "n": 6670,
+      "mediana_java": 2.0,
+      "mediana_python": 3.0,
+      "error_relativo_mediano": 0.5,
+      "error_relativo_p90": 0.6,
+      "fraccion_dentro_del_1pct": 0.0026986506746626685,
+      "fraccion_dentro_del_10pct": 0.0026986506746626685,
+      "razon_mediana_python_sobre_java": 1.5,
+      "correlacion_spearman": 0.9804799732891571
+    },
+    "Total Backward Packets": {
+      "n": 6670,
+      "mediana_java": 2.0,
+      "mediana_python": 2.0,
+      "error_relativo_mediano": 0.0,
+      "error_relativo_p90": 0.16666666666666666,
+      "fraccion_dentro_del_1pct": 0.6400299850074963,
+      "fraccion_dentro_del_10pct": 0.6400299850074963,
+      "razon_mediana_python_sobre_java": 1.0,
+      "correlacion_spearman": 0.9908815773499381
+    },
+    "Fwd Packets Length Total": {
+      "n": 6670,
+      "mediana_java": 0.0,
+      "mediana_python": 222.0,
+      "error_relativo_mediano": 222000000000.0,
+      "error_relativo_p90": 222000000000.0,
+      "fraccion_dentro_del_1pct": 0.0,
+      "fraccion_dentro_del_10pct": 0.00014992503748125936,
+      "razon_mediana_python_sobre_java": 16.771428571428572,
+      "correlacion_spearman": 0.9740762828775283
+    },
+    "Bwd Packets Length Total": {
+      "n": 6670,
+      "mediana_java": 0.0,
+      "mediana_python": 132.0,
+      "error_relativo_mediano": 131999999999.99998,
+      "error_relativo_p90": 131999999999.99998,
+      "fraccion_dentro_del_1pct": 0.0,
+      "fraccion_dentro_del_10pct": 0.3475262368815592,
+      "razon_mediana_python_sobre_java": 1.032873292183924,
+      "correlacion_spearman": 0.9782625695950262
+    },
+    "Flow Packets/s": {
+      "n": 6670,
+      "mediana_java": 142857.14285714287,
+      "mediana_python": 178571.42857142858,
+      "error_relativo_mediano": 0.24999999999999994,
+      "error_relativo_p90": 0.29331690034374136,
+      "fraccion_dentro_del_1pct": 0.008095952023988006,
+      "fraccion_dentro_del_10pct": 0.07766116941529236,
+      "razon_mediana_python_sobre_java": 1.25,
+      "correlacion_spearman": 0.9932721336910775
+    },
+    "Flow Bytes/s": {
+      "n": 6670,
+      "mediana_java": 0.0,
+      "mediana_python": 13111111.111111112,
+      "error_relativo_mediano": 1.2642857142857142e+16,
+      "error_relativo_p90": 2.5285714285714284e+16,
+      "fraccion_dentro_del_1pct": 0.028035982008995503,
+      "fraccion_dentro_del_10pct": 0.22038980509745126,
+      "razon_mediana_python_sobre_java": 0.9567020016401909,
+      "correlacion_spearman": -0.6453550935400401
+    },
+    "Flow IAT Mean": {
+      "n": 6670,
+      "mediana_java": 9.333333333333334,
+      "mediana_python": 7.0,
+      "error_relativo_mediano": 0.24999999999999997,
+      "error_relativo_p90": 0.2507443216978662,
+      "fraccion_dentro_del_1pct": 0.006896551724137931,
+      "fraccion_dentro_del_10pct": 0.07031484257871065,
+      "razon_mediana_python_sobre_java": 0.75,
+      "correlacion_spearman": 0.9931207983339456
+    },
+    "Flow IAT Std": {
+      "n": 6670,
+      "mediana_java": 5.033222956847166,
+      "mediana_python": 5.385164807134505,
+      "error_relativo_mediano": 0.16147450843757874,
+      "error_relativo_p90": 0.5461646096066226,
+      "fraccion_dentro_del_1pct": 0.040179910044977514,
+      "fraccion_dentro_del_10pct": 0.2616191904047976,
+      "razon_mediana_python_sobre_java": 0.9261427956144954,
+      "correlacion_spearman": 0.9408004394492526
+    },
+    "Flow IAT Min": {
+      "n": 6670,
+      "mediana_java": 3.0,
+      "mediana_python": 0.0,
+      "error_relativo_mediano": 1.0,
+      "error_relativo_p90": 1.0,
+      "fraccion_dentro_del_1pct": 0.02923538230884558,
+      "fraccion_dentro_del_10pct": 0.02923538230884558,
+      "razon_mediana_python_sobre_java": 0.0,
+      "correlacion_spearman": null
+    },
+    "Flow IAT Max": {
+      "n": 6670,
+      "mediana_java": 14.0,
+      "mediana_python": 14.0,
+      "error_relativo_mediano": 0.0,
+      "error_relativo_p90": 0.0,
+      "fraccion_dentro_del_1pct": 0.9821589205397301,
+      "fraccion_dentro_del_10pct": 0.9862068965517241,
+      "razon_mediana_python_sobre_java": 1.0,
+      "correlacion_spearman": 0.9984437192821565
+    }
+  },
+  "modelo": {
+    "flujos": 6670,
+    "diferencia_absoluta_media_de_probabilidad": 0.33056546551838606,
+    "diferencia_absoluta_p90": 0.5693228862394228,
+    "acuerdo_en_la_decision": 0.44482758620689655,
+    "marcados_con_java": 3703,
+    "marcados_con_python": 0,
+    "por_captura": {
+      "inundacion_http": {
+        "flujos": 6589,
+        "p_media_java": 0.5962636622704034,
+        "p_media_python": 0.3178589623467269,
+        "acuerdo": 0.43876157231749885
+      },
+      "legitimo": {
+        "flujos": 81,
+        "p_media_java": 0.39386636457464747,
+        "p_media_python": 0.4480625086885335,
+        "acuerdo": 0.9382716049382716
+      }
+    }
+  }
+}

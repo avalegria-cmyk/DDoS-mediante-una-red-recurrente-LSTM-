@@ -1,0 +1,39 @@
+{
+  "ip_atacante": "192.168.0.114",
+  "unidad": "(ventana de captura, IP de origen)",
+  "politicas": {
+    "tasa": {
+      "descripcion": "solo regla por tasa (linea base sin ML)",
+      "ataque_UDP_ventanas": 8,
+      "ataque_UDP_detectadas": 7,
+      "ataque_HTTP_ventanas": 11,
+      "ataque_HTTP_detectadas": 11,
+      "benignas_unidades": 501,
+      "benignas_marcadas": 0,
+      "marcadas | cliente legitimo de la victima": "0 / 255",
+      "marcadas | fondo (otro trafico de la maquina)": "0 / 246"
+    },
+    "modelo": {
+      "descripcion": "solo modelo RF-11",
+      "ataque_UDP_ventanas": 8,
+      "ataque_UDP_detectadas": 8,
+      "ataque_HTTP_ventanas": 11,
+      "ataque_HTTP_detectadas": 6,
+      "benignas_unidades": 501,
+      "benignas_marcadas": 0,
+      "marcadas | cliente legitimo de la victima": "0 / 255",
+      "marcadas | fondo (otro trafico de la maquina)": "0 / 246"
+    },
+    "combinada": {
+      "descripcion": "modelo + regla por tasa (prototipo)",
+      "ataque_UDP_ventanas": 8,
+      "ataque_UDP_detectadas": 8,
+      "ataque_HTTP_ventanas": 11,
+      "ataque_HTTP_detectadas": 11,
+      "benignas_unidades": 501,
+      "benignas_marcadas": 0,
+      "marcadas | cliente legitimo de la victima": "0 / 255",
+      "marcadas | fondo (otro trafico de la maquina)": "0 / 246"
+    }
+  }
+}

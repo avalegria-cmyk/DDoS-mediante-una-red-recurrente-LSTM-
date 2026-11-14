@@ -22,3 +22,4 @@ modelo_rf_multiclase/xgboost.pkl
 experimentos/capturas/
 experimentos/resultados/log_*.txt
 experimentos/resultados/mitigacion_flujos.csv
+experimentos/resultados/ablacion_politicas.csv

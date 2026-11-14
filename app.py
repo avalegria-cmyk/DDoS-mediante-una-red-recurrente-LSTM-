@@ -7,6 +7,7 @@ import platform
 import shlex
 import gzip
 import shutil
+import socket
 import subprocess
 import threading
 import time
@@ -69,6 +70,29 @@ DEFAULT_WHITELIST_IPS = ",".join(
     ]
 )
 WHITELIST_IPS = {ip.strip() for ip in os.getenv("WHITELIST_IPS", DEFAULT_WHITELIST_IPS).split(",") if ip.strip()}
+
+
+def _local_addresses() -> set[str]:
+    """Direcciones propias del equipo (se usan si PROTECTED_IPS no se define)."""
+    found: set[str] = set()
+    try:
+        found.update(socket.gethostbyname_ex(socket.gethostname())[2])
+    except OSError:
+        pass
+    try:
+        probe = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        probe.connect(("192.0.2.1", 9))  # no envia nada; solo elige la interfaz de salida
+        found.add(probe.getsockname()[0])
+        probe.close()
+    except OSError:
+        pass
+    return found
+
+
+# Direcciones del servidor protegido: nunca se bloquean. Si un flujo aparece con una de ellas como
+# origen (ocurre cuando la ventana de captura empieza a mitad de una conexion y el primer paquete
+# visto es la respuesta del servidor), el flujo se atribuye al otro extremo.
+PROTECTED_IPS = {ip.strip() for ip in os.getenv("PROTECTED_IPS", "").split(",") if ip.strip()} or _local_addresses()
 IGNORE_LOCAL_NOISE = os.getenv("IGNORE_LOCAL_NOISE", "true").lower() == "true"
 LOCAL_NOISE_PORTS = {
     int(port.strip())
@@ -348,6 +372,7 @@ def health() -> dict[str, Any]:
         "block_ttl_seconds": BLOCK_TTL_SECONDS,
         "block_script": BLOCK_SCRIPT,
         "threshold": PREDICTION_THRESHOLD,
+        "protected_ips": sorted(PROTECTED_IPS),
         "rate_rule": {"window_s": RATE_WINDOW_SECONDS, "source_pps": RATE_ATTACK_PPS,
                       "source_flows_per_s": RATE_ATTACK_FLOWS_PER_SECOND},
         "timesteps": timesteps,
@@ -716,6 +741,12 @@ def process_xgboost_file(csv_path: Path, df: pd.DataFrame) -> None:
         pps = safe_number(row.get("Flow Packets/s", 0))
         bps = safe_number(row.get("Flow Bytes/s", 0))
 
+        reversed_flow = str(src_ip) in PROTECTED_IPS and str(dst_ip) not in PROTECTED_IPS
+        src_ip = remote_endpoint(str(src_ip), str(dst_ip))
+        if reversed_flow:
+            # Las variables de un flujo visto al reves tienen los sentidos intercambiados: no se usa
+            # la probabilidad del modelo para decidir; el flujo solo cuenta para la tasa del extremo remoto.
+            probability = 0.0
         source_rate = source_rates.get(str(src_ip), {"pps": 0.0, "fps": 0.0})
         rate_attack = is_rate_attack_source(source_rate)
         local_noise = is_local_noise_flow(row, dst_ip, port, pps, bps)
@@ -937,12 +968,28 @@ def source_rate_stats(df: pd.DataFrame, window_seconds: float | None = None) -> 
         sent = pd.to_numeric(work["Total Fwd Packets"], errors="coerce").fillna(0)
     else:
         sent = pd.Series(0.0, index=work.index)
-    grouped = pd.DataFrame({"src": work[src_col].astype(str), "sent": sent}).groupby("src")["sent"].agg(["sum", "count"])
+    sources = work[src_col].astype(str)
+    dst_col = next((col for col in DST_COLUMNS if col in work.columns), None)
+    if dst_col is not None and PROTECTED_IPS:
+        # Flujos vistos "al reves": se atribuyen al extremo remoto y se cuentan sus paquetes (los de retorno).
+        reversed_flow = sources.isin(PROTECTED_IPS) & ~work[dst_col].astype(str).isin(PROTECTED_IPS)
+        if reversed_flow.any() and "Total Backward Packets" in work.columns:
+            back = pd.to_numeric(work["Total Backward Packets"], errors="coerce").fillna(0)
+            sent = sent.where(~reversed_flow, back)
+        sources = sources.where(~reversed_flow, work[dst_col].astype(str))
+    grouped = pd.DataFrame({"src": sources, "sent": sent}).groupby("src")["sent"].agg(["sum", "count"])
     window = max(window_seconds or RATE_WINDOW_SECONDS, 0.5)
     return {
         str(src): {"pps": float(row["sum"]) / window, "fps": float(row["count"]) / window}
         for src, row in grouped.iterrows()
     }
+
+
+def remote_endpoint(src_ip: str, dst_ip: str) -> str:
+    """Extremo remoto de un flujo: el origen, salvo que el origen sea el propio servidor protegido."""
+    if src_ip in PROTECTED_IPS and dst_ip not in PROTECTED_IPS:
+        return dst_ip
+    return src_ip
 
 
 def is_rate_attack_source(source_rate: dict[str, float]) -> bool:
@@ -1005,6 +1052,9 @@ def run_block_script(ip: str, action: str = "block") -> bool:
 def apply_block(ip: str, reason: str, risk: int, source: str, **details: Any) -> None:
     """Registra la IP y, si AUTO_BLOCK=true, aplica la regla temporal en el firewall."""
     detected_at = time.time()
+    if ip in PROTECTED_IPS:
+        log_mitigation({"evento": "bloqueo_omitido_ip_protegida", "ip": ip, "origen": source, "riesgo": risk})
+        return
     if not state.add_block(ip, reason, risk, source):
         return
     record: dict[str, Any] = {

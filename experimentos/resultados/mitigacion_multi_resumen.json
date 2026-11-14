@@ -1,0 +1,213 @@
+{
+  "http": {
+    "corridas": 5,
+    "bloqueadas": 5,
+    "s_mediana": 18.96,
+    "s_min": 18.65,
+    "s_max": 19.58,
+    "clientes_legitimos_bloqueados": [],
+    "corridas_con_cliente_bloqueado": 0,
+    "servicio": {
+      "antes_del_ataque": {
+        "peticiones": 918,
+        "respondidas": 918,
+        "tasa": 1.0
+      },
+      "ataque_sin_bloqueo": {
+        "peticiones": 740,
+        "respondidas": 235,
+        "tasa": 0.3176
+      },
+      "ataque_con_bloqueo": {
+        "peticiones": 1018,
+        "respondidas": 1018,
+        "tasa": 1.0
+      },
+      "despues_del_ataque": {
+        "peticiones": 972,
+        "respondidas": 972,
+        "tasa": 1.0
+      }
+    },
+    "disparo": [
+      [
+        "regla_por_tasa",
+        0.45,
+        36.182
+      ],
+      [
+        "regla_por_tasa",
+        0.37,
+        34.816
+      ],
+      [
+        "regla_por_tasa",
+        0.4,
+        31.872
+      ],
+      [
+        "regla_por_tasa",
+        0.41,
+        36.315
+      ],
+      [
+        "regla_por_tasa",
+        0.42,
+        35.879
+      ]
+    ],
+    "ataque_enviado": [
+      {
+        "ok": 76712,
+        "fallo": 168352
+      },
+      {
+        "ok": 80251,
+        "fallo": 167705
+      },
+      {
+        "ok": 75494,
+        "fallo": 160746
+      },
+      {
+        "ok": 76447,
+        "fallo": 164193
+      },
+      {
+        "ok": 76317,
+        "fallo": 162047
+      }
+    ]
+  },
+  "udp": {
+    "corridas": 5,
+    "bloqueadas": 5,
+    "s_mediana": 20.46,
+    "s_min": 14.07,
+    "s_max": 20.79,
+    "clientes_legitimos_bloqueados": [],
+    "corridas_con_cliente_bloqueado": 0,
+    "servicio": {
+      "antes_del_ataque": {
+        "peticiones": 925,
+        "respondidas": 925,
+        "tasa": 1.0
+      },
+      "ataque_sin_bloqueo": {
+        "peticiones": 724,
+        "respondidas": 724,
+        "tasa": 1.0
+      },
+      "ataque_con_bloqueo": {
+        "peticiones": 1030,
+        "respondidas": 1030,
+        "tasa": 1.0
+      },
+      "despues_del_ataque": {
+        "peticiones": 958,
+        "respondidas": 958,
+        "tasa": 1.0
+      }
+    },
+    "disparo": [
+      [
+        "modelo",
+        0.91,
+        36.633
+      ],
+      [
+        "modelo",
+        0.91,
+        37.721
+      ],
+      [
+        "modelo",
+        0.91,
+        33.635
+      ],
+      [
+        "modelo",
+        0.91,
+        33.841
+      ],
+      [
+        "modelo",
+        0.91,
+        29.852
+      ]
+    ],
+    "ataque_enviado": [
+      {
+        "ok": 107940,
+        "fallo": 0
+      },
+      {
+        "ok": 108330,
+        "fallo": 0
+      },
+      {
+        "ok": 107550,
+        "fallo": 0
+      },
+      {
+        "ok": 107550,
+        "fallo": 0
+      },
+      {
+        "ok": 101520,
+        "fallo": 0
+      }
+    ]
+  },
+  "slow": {
+    "corridas": 3,
+    "bloqueadas": 0,
+    "s_mediana": null,
+    "s_min": null,
+    "s_max": null,
+    "clientes_legitimos_bloqueados": [],
+    "corridas_con_cliente_bloqueado": 0,
+    "servicio": {
+      "antes_del_ataque": {
+        "peticiones": 554,
+        "respondidas": 554,
+        "tasa": 1.0
+      },
+      "ataque_sin_bloqueo": {
+        "peticiones": 1049,
+        "respondidas": 1049,
+        "tasa": 1.0
+      },
+      "ataque_con_bloqueo": {
+        "peticiones": 0,
+        "respondidas": 0,
+        "tasa": null
+      },
+      "despues_del_ataque": {
+        "peticiones": 578,
+        "respondidas": 578,
+        "tasa": 1.0
+      }
+    },
+    "disparo": [
+      null,
+      null,
+      null
+    ],
+    "ataque_enviado": [
+      {
+        "ok": 150,
+        "fallo": 0
+      },
+      {
+        "ok": 150,
+        "fallo": 0
+      },
+      {
+        "ok": 150,
+        "fallo": 0
+      }
+    ]
+  },
+  "bloqueos_omitidos_ip_protegida": 0
+}

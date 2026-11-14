@@ -1,0 +1,70 @@
+{
+  "ataque": "udp",
+  "atacante": "10.99.0.2",
+  "victima": "10.99.0.1",
+  "clientes": [
+    "10.99.0.11",
+    "10.99.0.12",
+    "10.99.0.13",
+    "10.99.0.14",
+    "10.99.0.15"
+  ],
+  "t_inicio_ataque": 1794674764.7156649,
+  "duracion_ataque_s": 45,
+  "atacante_bloqueado": true,
+  "s_ataque_a_bloqueo": 16.49,
+  "clientes_legitimos_bloqueados": [],
+  "bloqueos_antes_del_ataque": [],
+  "servicio_legitimo": {
+    "antes_del_ataque": {
+      "peticiones": 200,
+      "respondidas": 200,
+      "tasa_exito": 1.0,
+      "latencia_mediana_ms": 2.7
+    },
+    "ataque_sin_bloqueo": {
+      "peticiones": 127,
+      "respondidas": 127,
+      "tasa_exito": 1.0,
+      "latencia_mediana_ms": 2.3
+    },
+    "ataque_con_bloqueo": {
+      "peticiones": 226,
+      "respondidas": 226,
+      "tasa_exito": 1.0,
+      "latencia_mediana_ms": 2.4
+    },
+    "despues_del_ataque": {
+      "peticiones": 190,
+      "respondidas": 190,
+      "tasa_exito": 1.0,
+      "latencia_mediana_ms": 2.6
+    }
+  },
+  "peticiones_por_cliente": {
+    "10.99.0.11": {
+      "total": 70,
+      "ok": 70
+    },
+    "10.99.0.12": {
+      "total": 69,
+      "ok": 69
+    },
+    "10.99.0.13": {
+      "total": 94,
+      "ok": 94
+    },
+    "10.99.0.14": {
+      "total": 49,
+      "ok": 49
+    },
+    "10.99.0.15": {
+      "total": 467,
+      "ok": 467
+    }
+  },
+  "ataque_enviado": {
+    "ok": 107550,
+    "fallo": 0
+  }
+}

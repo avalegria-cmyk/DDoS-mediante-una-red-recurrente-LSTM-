@@ -1,0 +1,8 @@
+FROM --platform=linux/amd64 maven:3.9-eclipse-temurin-8
+RUN apt-get update && apt-get install -y --no-install-recommends libpcap0.8 && rm -rf /var/lib/apt/lists/* \
+    && (ls /usr/lib/x86_64-linux-gnu/libpcap.so.0.8 && ln -sf /usr/lib/x86_64-linux-gnu/libpcap.so.0.8 /usr/lib/x86_64-linux-gnu/libpcap.so || true)
+WORKDIR /src
+COPY . /src
+RUN cd jnetpcap/linux/jnetpcap-1.4.r1425 && mvn -q install:install-file -Dfile=jnetpcap.jar -DgroupId=org.jnetpcap -DartifactId=jnetpcap -Dversion=1.4.1 -Dpackaging=jar
+RUN mvn -q -DskipTests package dependency:copy-dependencies -DoutputDirectory=target/deps
+ENTRYPOINT ["sh", "-c", "java -Djava.library.path=/src/jnetpcap/linux/jnetpcap-1.4.r1425 -cp \"target/classes:target/deps/*\" cic.cs.unb.ca.ifm.Cmd \"$0\" \"$1\""]

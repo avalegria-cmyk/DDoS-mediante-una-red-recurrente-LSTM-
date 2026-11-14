@@ -1,0 +1,111 @@
+{
+  "repeticiones": 3,
+  "nucleos_logicos": 10,
+  "capturas": {
+    "legitimo": {
+      "paquetes": 1020,
+      "tamano_mb": 1.086834,
+      "ventana_s": 8.522421836853027,
+      "flujos": 81,
+      "extraccion_s": 0.6391217079944909,
+      "extraccion_cpu_s": 0.62,
+      "extraccion_cpu_pct_de_un_nucleo": 97.0081272854128,
+      "extraccion_ram_mb": 138.313728,
+      "extraccion_paquetes_por_s": 1595.9401585664687,
+      "inferencia_s": 0.020068375044502318,
+      "inferencia_cpu_s": 0.019321000000000033,
+      "inferencia_cpu_pct_de_un_nucleo": 96.27585670067978,
+      "inferencia_ram_mb": 453.18144,
+      "inferencia_ms_por_flujo": 0.24775771659879406,
+      "total_tras_la_captura_s": 0.6591900830389932,
+      "total_con_ventana_s": 9.18161191989202
+    },
+    "inundacion_udp": {
+      "paquetes": 34886,
+      "tamano_mb": 16.60854,
+      "ventana_s": 14.145424842834473,
+      "flujos": 120,
+      "extraccion_s": 5.382819999998901,
+      "extraccion_cpu_s": 5.359999999999999,
+      "extraccion_cpu_pct_de_un_nucleo": 99.57605864586024,
+      "extraccion_ram_mb": 343.81824,
+      "extraccion_paquetes_por_s": 6480.989518506493,
+      "inferencia_s": 0.01963520800927654,
+      "inferencia_cpu_s": 0.018753999999999937,
+      "inferencia_cpu_pct_de_un_nucleo": 95.5121025004661,
+      "inferencia_ram_mb": 453.18144,
+      "inferencia_ms_por_flujo": 0.16362673341063783,
+      "total_tras_la_captura_s": 5.402455208008178,
+      "total_con_ventana_s": 19.54788005084265
+    },
+    "inundacion_http": {
+      "paquetes": 50000,
+      "tamano_mb": 36.216146,
+      "ventana_s": 10.134692907333374,
+      "flujos": 6589,
+      "extraccion_s": 9.004649749957025,
+      "extraccion_cpu_s": 8.98,
+      "extraccion_cpu_pct_de_un_nucleo": 99.7262553165142,
+      "extraccion_ram_mb": 513.687552,
+      "extraccion_paquetes_por_s": 5552.686821632194,
+      "inferencia_s": 0.17848412500461563,
+      "inferencia_cpu_s": 0.20361200000000013,
+      "inferencia_cpu_pct_de_un_nucleo": 114.07849297226555,
+      "inferencia_ram_mb": 528.728064,
+      "inferencia_ms_por_flujo": 0.02708819623685167,
+      "total_tras_la_captura_s": 9.18313387496164,
+      "total_con_ventana_s": 19.317826782295015
+    }
+  },
+  "regla_firewall_ms": {
+    "n": 27,
+    "mediana": 33.386,
+    "min": 23.535,
+    "max": 141.497,
+    "fuente": "bitacora del detector (pf real)"
+  },
+  "carga_rf_cpu": [
+    {
+      "flujos_por_lote": 1,
+      "cpu_pct_de_un_nucleo": 57.8,
+      "cpu_pct_del_equipo": 5.779999999999999,
+      "ram_mb": 509.476864
+    },
+    {
+      "flujos_por_lote": 10,
+      "cpu_pct_de_un_nucleo": 60.9,
+      "cpu_pct_del_equipo": 6.09,
+      "ram_mb": 509.575168
+    },
+    {
+      "flujos_por_lote": 100,
+      "cpu_pct_de_un_nucleo": 107.3,
+      "cpu_pct_del_equipo": 10.73,
+      "ram_mb": 509.771776
+    },
+    {
+      "flujos_por_lote": 1000,
+      "cpu_pct_de_un_nucleo": 196.6,
+      "cpu_pct_del_equipo": 19.66,
+      "ram_mb": 509.984768
+    },
+    {
+      "flujos_por_lote": 5000,
+      "cpu_pct_de_un_nucleo": 271.7,
+      "cpu_pct_del_equipo": 27.169999999999998,
+      "ram_mb": 522.73152
+    },
+    {
+      "flujos_por_lote": 10000,
+      "cpu_pct_de_un_nucleo": 435.6,
+      "cpu_pct_del_equipo": 43.56,
+      "ram_mb": 562.823168
+    },
+    {
+      "flujos_por_lote": 50000,
+      "cpu_pct_de_un_nucleo": 656.2,
+      "cpu_pct_del_equipo": 65.62,
+      "ram_mb": 808.157184
+    }
+  ]
+}

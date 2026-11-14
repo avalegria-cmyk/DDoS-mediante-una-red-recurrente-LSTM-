@@ -175,6 +175,13 @@ def main() -> None:
         "peticiones_por_cliente": {ip: phase_c for ip, phase_c in (
             (c[0], {"total": sum(1 for r in requests if r["cliente"] == c[0]), "ok": sum(1 for r in requests if r["cliente"] == c[0] and r["ok"])}) for c in CLIENTS)},
         "ataque_enviado": counters,
+        # Serie por segundo relativa al inicio del ataque: [segundo, peticiones legitimas, respondidas].
+        "serie_por_segundo": [
+            [sec, len([r for r in requests if sec <= r["t"] - t_attack < sec + 1]),
+             len([r for r in requests if sec <= r["t"] - t_attack < sec + 1 and r["ok"]])]
+            for sec in range(-int(args.legit_seconds), int(args.attack_seconds) + 25)
+        ],
+        "s_fin_ataque": args.attack_seconds,
     }
     out = args.out or ROOT / "experimentos" / "resultados" / f"mitigacion_multi_{args.attack}.json"
     out.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")

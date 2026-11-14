@@ -1,0 +1,540 @@
+{
+  "ip_atacante": "192.168.0.114",
+  "ttl_s": 60,
+  "captura_s": 15,
+  "concurrencia": 20,
+  "ataque_s": 20,
+  "t_inicio_legitimo": 1794632332.272264,
+  "bloqueos_tras_fase_legitima": [],
+  "legitimo_fase1": {
+    "ok": 52,
+    "fallo": 0
+  },
+  "t_inicio_ataque": 1794632358.2756422,
+  "bloqueo_api": {
+    "ip": "192.168.0.114",
+    "reason": "Modelo RF-11 detecto DDoS/DoS por tasa con riesgo 100%",
+    "risk": 100,
+    "since": "23:59:38",
+    "sinceEpoch": 1794632378.41796,
+    "expiresEpoch": 1794632438.41796,
+    "status": "Bloqueada",
+    "source": "model"
+  },
+  "t_bloqueo_visto_api": 1794632378.5528939,
+  "t_victima_inaccesible": 1794632378.5528939,
+  "t_victima_recuperada": 1794632440.034704,
+  "s_ataque_a_bloqueo": 20.28,
+  "s_bloqueo_efectivo": 61.48,
+  "sondeos": [
+    [
+      0.0,
+      false
+    ],
+    [
+      0.31,
+      false
+    ],
+    [
+      0.62,
+      false
+    ],
+    [
+      0.93,
+      false
+    ],
+    [
+      1.23,
+      true
+    ],
+    [
+      1.55,
+      false
+    ],
+    [
+      1.86,
+      true
+    ],
+    [
+      2.17,
+      true
+    ],
+    [
+      2.48,
+      false
+    ],
+    [
+      2.78,
+      false
+    ],
+    [
+      3.09,
+      false
+    ],
+    [
+      3.4,
+      true
+    ],
+    [
+      3.71,
+      false
+    ],
+    [
+      4.01,
+      true
+    ],
+    [
+      4.32,
+      false
+    ],
+    [
+      4.63,
+      false
+    ],
+    [
+      4.93,
+      true
+    ],
+    [
+      5.24,
+      false
+    ],
+    [
+      5.55,
+      true
+    ],
+    [
+      5.86,
+      false
+    ],
+    [
+      6.16,
+      false
+    ],
+    [
+      6.47,
+      false
+    ],
+    [
+      6.78,
+      false
+    ],
+    [
+      7.08,
+      false
+    ],
+    [
+      7.39,
+      false
+    ],
+    [
+      7.7,
+      false
+    ],
+    [
+      8.0,
+      false
+    ],
+    [
+      8.31,
+      true
+    ],
+    [
+      8.62,
+      true
+    ],
+    [
+      8.92,
+      false
+    ],
+    [
+      9.23,
+      false
+    ],
+    [
+      9.53,
+      true
+    ],
+    [
+      9.84,
+      false
+    ],
+    [
+      10.15,
+      false
+    ],
+    [
+      10.45,
+      false
+    ],
+    [
+      10.76,
+      false
+    ],
+    [
+      11.07,
+      false
+    ],
+    [
+      11.37,
+      true
+    ],
+    [
+      11.68,
+      false
+    ],
+    [
+      11.99,
+      true
+    ],
+    [
+      12.3,
+      false
+    ],
+    [
+      12.6,
+      false
+    ],
+    [
+      12.91,
+      false
+    ],
+    [
+      13.22,
+      false
+    ],
+    [
+      13.52,
+      true
+    ],
+    [
+      13.83,
+      false
+    ],
+    [
+      14.14,
+      false
+    ],
+    [
+      14.45,
+      false
+    ],
+    [
+      14.77,
+      false
+    ],
+    [
+      15.07,
+      false
+    ],
+    [
+      15.38,
+      false
+    ],
+    [
+      15.68,
+      false
+    ],
+    [
+      15.99,
+      true
+    ],
+    [
+      16.29,
+      false
+    ],
+    [
+      16.6,
+      false
+    ],
+    [
+      16.9,
+      false
+    ],
+    [
+      17.2,
+      false
+    ],
+    [
+      17.51,
+      false
+    ],
+    [
+      17.82,
+      false
+    ],
+    [
+      18.13,
+      false
+    ],
+    [
+      18.43,
+      false
+    ],
+    [
+      18.74,
+      true
+    ],
+    [
+      19.05,
+      false
+    ],
+    [
+      19.35,
+      true
+    ],
+    [
+      19.66,
+      true
+    ],
+    [
+      19.97,
+      false
+    ],
+    [
+      20.28,
+      false
+    ],
+    [
+      21.59,
+      false
+    ],
+    [
+      22.9,
+      false
+    ],
+    [
+      24.2,
+      false
+    ],
+    [
+      25.51,
+      false
+    ],
+    [
+      26.82,
+      false
+    ],
+    [
+      28.12,
+      false
+    ],
+    [
+      29.43,
+      false
+    ],
+    [
+      30.74,
+      false
+    ],
+    [
+      32.05,
+      false
+    ],
+    [
+      33.35,
+      false
+    ],
+    [
+      34.66,
+      false
+    ],
+    [
+      35.97,
+      false
+    ],
+    [
+      37.27,
+      false
+    ],
+    [
+      38.58,
+      false
+    ],
+    [
+      39.88,
+      false
+    ],
+    [
+      41.19,
+      false
+    ],
+    [
+      42.5,
+      false
+    ],
+    [
+      43.81,
+      false
+    ],
+    [
+      45.12,
+      false
+    ],
+    [
+      46.43,
+      false
+    ],
+    [
+      47.74,
+      false
+    ],
+    [
+      49.05,
+      false
+    ],
+    [
+      50.35,
+      false
+    ],
+    [
+      51.66,
+      false
+    ],
+    [
+      52.97,
+      false
+    ],
+    [
+      54.28,
+      false
+    ],
+    [
+      55.59,
+      false
+    ],
+    [
+      56.9,
+      false
+    ],
+    [
+      58.2,
+      false
+    ],
+    [
+      59.51,
+      false
+    ],
+    [
+      60.82,
+      false
+    ],
+    [
+      62.13,
+      false
+    ],
+    [
+      63.43,
+      false
+    ],
+    [
+      64.74,
+      false
+    ],
+    [
+      66.05,
+      false
+    ],
+    [
+      67.36,
+      false
+    ],
+    [
+      68.67,
+      false
+    ],
+    [
+      69.98,
+      false
+    ],
+    [
+      71.29,
+      false
+    ],
+    [
+      72.6,
+      false
+    ],
+    [
+      73.9,
+      false
+    ],
+    [
+      75.21,
+      false
+    ],
+    [
+      76.52,
+      false
+    ],
+    [
+      77.83,
+      false
+    ],
+    [
+      79.14,
+      false
+    ],
+    [
+      80.45,
+      true
+    ],
+    [
+      81.76,
+      true
+    ]
+  ],
+  "legitimo_total": {
+    "ok": 188,
+    "fallo": 26
+  },
+  "ataque_peticiones": {
+    "ok": 81668,
+    "fallo": 217795
+  },
+  "salud_final": {
+    "ok": true,
+    "mode": "real-flow-detector-xgboost",
+    "model": "modelo_rf_multiclase/xgboost.pkl",
+    "flow_dir": "data/flows",
+    "auto_block": true,
+    "block_ttl_seconds": 60,
+    "block_script": "scripts/ddos-block-ip",
+    "threshold": 0.65,
+    "rate_rule": {
+      "window_s": 15.0,
+      "source_pps": 1000.0,
+      "source_flows_per_s": 20.0
+    },
+    "timesteps": 1,
+    "feature_count": 11,
+    "capture_enabled": true,
+    "capture_interface": "lo0",
+    "platform": "Darwin",
+    "cicflowmeter_configured": true,
+    "last_error": null,
+    "whitelist_ips": [
+      "104.18.32.47",
+      "127.0.0.1",
+      "140.82.114.26",
+      "17.248.201.71",
+      "172.64.148.235",
+      "57.144.199.33"
+    ]
+  },
+  "captura_final": {
+    "failedCycles": 0,
+    "maxPacketsPerWindow": 50000,
+    "enabled": true,
+    "running": true,
+    "interface": "lo0",
+    "captureSeconds": 15,
+    "pcapDir": "data/pcap",
+    "flowDir": "data/flows",
+    "cicflowmeterConfigured": true,
+    "cicflowmeterCommand": "'.venv/bin/python' 'scripts/convertir_pcap.py' {pcap} {csv}",
+    "lastFile": "data/flows/flows-20261114-000018-471768.csv",
+    "lastError": null,
+    "cycles": 14
+  }
+}

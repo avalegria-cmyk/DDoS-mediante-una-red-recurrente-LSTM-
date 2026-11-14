@@ -1,0 +1,331 @@
+{
+  "ip_atacante": "192.168.0.114",
+  "ttl_s": 60,
+  "captura_s": 15,
+  "concurrencia": 50,
+  "ataque_s": 20,
+  "t_inicio_legitimo": 1794629520.461455,
+  "bloqueos_tras_fase_legitima": [],
+  "legitimo_fase1": {
+    "ok": 99,
+    "fallo": 0
+  },
+  "t_inicio_ataque": 1794629570.472977,
+  "bloqueo_api": {
+    "ip": "192.168.0.114",
+    "reason": "Modelo RF-11 detecto DDoS/DoS por tasa con riesgo 100%",
+    "risk": 100,
+    "since": "23:12:55",
+    "sinceEpoch": 1794629575.1079118,
+    "expiresEpoch": 1794629635.1079118,
+    "status": "Bloqueada",
+    "source": "model"
+  },
+  "t_bloqueo_visto_api": 1794629575.409384,
+  "t_victima_inaccesible": 1794629575.409384,
+  "t_victima_recuperada": 1794629635.6206348,
+  "s_ataque_a_bloqueo": 4.94,
+  "s_bloqueo_efectivo": 60.21,
+  "sondeos": [
+    [
+      0.0,
+      true
+    ],
+    [
+      0.31,
+      true
+    ],
+    [
+      0.62,
+      true
+    ],
+    [
+      0.93,
+      true
+    ],
+    [
+      1.24,
+      true
+    ],
+    [
+      1.55,
+      true
+    ],
+    [
+      1.86,
+      true
+    ],
+    [
+      2.17,
+      true
+    ],
+    [
+      2.48,
+      true
+    ],
+    [
+      2.79,
+      true
+    ],
+    [
+      3.09,
+      true
+    ],
+    [
+      3.4,
+      true
+    ],
+    [
+      3.7,
+      true
+    ],
+    [
+      4.01,
+      true
+    ],
+    [
+      4.32,
+      true
+    ],
+    [
+      4.63,
+      true
+    ],
+    [
+      4.94,
+      false
+    ],
+    [
+      6.25,
+      false
+    ],
+    [
+      7.56,
+      false
+    ],
+    [
+      8.87,
+      false
+    ],
+    [
+      10.17,
+      false
+    ],
+    [
+      11.48,
+      false
+    ],
+    [
+      12.79,
+      false
+    ],
+    [
+      14.1,
+      false
+    ],
+    [
+      15.41,
+      false
+    ],
+    [
+      16.72,
+      false
+    ],
+    [
+      18.02,
+      false
+    ],
+    [
+      19.33,
+      false
+    ],
+    [
+      20.64,
+      false
+    ],
+    [
+      21.95,
+      false
+    ],
+    [
+      23.26,
+      false
+    ],
+    [
+      24.57,
+      false
+    ],
+    [
+      25.88,
+      false
+    ],
+    [
+      27.18,
+      false
+    ],
+    [
+      28.49,
+      false
+    ],
+    [
+      29.8,
+      false
+    ],
+    [
+      31.11,
+      false
+    ],
+    [
+      32.42,
+      false
+    ],
+    [
+      33.73,
+      false
+    ],
+    [
+      35.04,
+      false
+    ],
+    [
+      36.35,
+      false
+    ],
+    [
+      37.66,
+      false
+    ],
+    [
+      38.97,
+      false
+    ],
+    [
+      40.28,
+      false
+    ],
+    [
+      41.59,
+      false
+    ],
+    [
+      42.9,
+      false
+    ],
+    [
+      44.2,
+      false
+    ],
+    [
+      45.52,
+      false
+    ],
+    [
+      46.82,
+      false
+    ],
+    [
+      48.13,
+      false
+    ],
+    [
+      49.44,
+      false
+    ],
+    [
+      50.75,
+      false
+    ],
+    [
+      52.07,
+      false
+    ],
+    [
+      53.38,
+      false
+    ],
+    [
+      54.69,
+      false
+    ],
+    [
+      55.99,
+      false
+    ],
+    [
+      57.3,
+      false
+    ],
+    [
+      58.6,
+      false
+    ],
+    [
+      59.91,
+      false
+    ],
+    [
+      61.22,
+      false
+    ],
+    [
+      62.53,
+      false
+    ],
+    [
+      63.84,
+      true
+    ],
+    [
+      65.15,
+      true
+    ]
+  ],
+  "legitimo_total": {
+    "ok": 228,
+    "fallo": 0
+  },
+  "ab_resumen": [],
+  "salud_final": {
+    "ok": true,
+    "mode": "real-flow-detector-xgboost",
+    "model": "modelo_rf_multiclase/xgboost.pkl",
+    "flow_dir": "data/flows",
+    "auto_block": true,
+    "block_ttl_seconds": 60,
+    "block_script": "scripts/ddos-block-ip",
+    "threshold": 0.65,
+    "rate_rule": {
+      "window_s": 15.0,
+      "source_pps": 1000.0,
+      "source_flows_per_s": 20.0
+    },
+    "timesteps": 1,
+    "feature_count": 11,
+    "capture_enabled": true,
+    "capture_interface": "lo0",
+    "platform": "Darwin",
+    "cicflowmeter_configured": true,
+    "last_error": null,
+    "whitelist_ips": [
+      "104.18.32.47",
+      "127.0.0.1",
+      "140.82.114.26",
+      "17.248.201.71",
+      "172.64.148.235",
+      "57.144.199.33"
+    ]
+  },
+  "captura_final": {
+    "enabled": true,
+    "running": true,
+    "interface": "lo0",
+    "captureSeconds": 15,
+    "pcapDir": "data/pcap",
+    "flowDir": "data/flows",
+    "cicflowmeterConfigured": true,
+    "cicflowmeterCommand": "'.venv/bin/python' 'scripts/convertir_pcap.py' {pcap} {csv}",
+    "lastFile": "data/flows/flows-20261113-231325-309885.csv",
+    "lastError": null,
+    "cycles": 7
+  }
+}

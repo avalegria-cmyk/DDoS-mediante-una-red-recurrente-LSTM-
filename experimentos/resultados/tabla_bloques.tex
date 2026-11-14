@@ -1,0 +1,19 @@
+% Generado por experimentos/evaluacion_unificada.py
+\begin{tabular}{clccccc}
+\toprule
+\textbf{Rank} & \textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-score} & \textbf{AUC-ROC}\\
+\midrule
+1 & LSTM (77 features) & 0.9993 $\pm$ 0.0002 & 0.9979 $\pm$ 0.0005 & 0.9992 $\pm$ 0.0001 & 0.9985 $\pm$ 0.0003 & 1.0000 $\pm$ 0.0000\\
+2 & GRU (77 features) & 0.9992 $\pm$ 0.0004 & 0.9977 $\pm$ 0.0013 & 0.9990 $\pm$ 0.0002 & 0.9984 $\pm$ 0.0007 & 1.0000 $\pm$ 0.0000\\
+3 & GRU (25 features) & 0.9980 $\pm$ 0.0003 & 0.9933 $\pm$ 0.0011 & 0.9990 $\pm$ 0.0001 & 0.9961 $\pm$ 0.0005 & 0.9999 $\pm$ 0.0000\\
+4 & LSTM (25 features) & 0.9977 $\pm$ 0.0004 & 0.9921 $\pm$ 0.0017 & 0.9989 $\pm$ 0.0001 & 0.9955 $\pm$ 0.0008 & 0.9998 $\pm$ 0.0001\\
+5 & LSTM (47 features) & 0.9977 $\pm$ 0.0006 & 0.9920 $\pm$ 0.0022 & 0.9990 $\pm$ 0.0001 & 0.9955 $\pm$ 0.0011 & 0.9999 $\pm$ 0.0000\\
+6 & XGBoost (77 features) & 0.9963 $\pm$ 0.0002 & 0.9863 $\pm$ 0.0007 & 0.9993 $\pm$ 0.0001 & 0.9927 $\pm$ 0.0004 & 1.0000 $\pm$ 0.0000\\
+7 & Random Forest (77 features) & 0.9960 $\pm$ 0.0003 & 0.9852 $\pm$ 0.0011 & 0.9991 $\pm$ 0.0001 & 0.9921 $\pm$ 0.0006 & 0.9999 $\pm$ 0.0000\\
+8 & MLP (77 features) & 0.9904 $\pm$ 0.0014 & 0.9649 $\pm$ 0.0051 & 0.9984 $\pm$ 0.0001 & 0.9813 $\pm$ 0.0026 & 0.9990 $\pm$ 0.0004\\
+9 & Compact Random Forest (11 features, binary) & 0.9850 $\pm$ 0.0002 & 0.9450 $\pm$ 0.0006 & 0.9990 $\pm$ 0.0000 & 0.9712 $\pm$ 0.0003 & 0.9997 $\pm$ 0.0000\\
+10 & Compact Random Forest (11 features, multiclass grouped, deployed) & 0.9822 $\pm$ 0.0003 & 0.9352 $\pm$ 0.0009 & 0.9992 $\pm$ 0.0002 & 0.9662 $\pm$ 0.0005 & 0.9997 $\pm$ 0.0000\\
+11 & Isolation Forest (77 features) & 0.7389 $\pm$ 0.0138 & 0.3688 $\pm$ 0.1794 & 0.0695 $\pm$ 0.0547 & 0.1158 $\pm$ 0.0852 & 0.9092 $\pm$ 0.0125\\
+\bottomrule
+\end{tabular}
+% Instancias de prueba (identicas para todos los modelos): 19911

@@ -1,0 +1,19 @@
+{
+  "ataque": "inundacion UDP de un solo flujo (400 bytes)",
+  "ip_atacante": "192.168.0.114",
+  "t_inicio_ataque": 1794631436.360451,
+  "duracion_s": 20,
+  "datagramas": 40320,
+  "pps": 2016,
+  "s_ataque_a_bloqueo": 20.62,
+  "bloqueo_api": {
+    "ip": "192.168.0.114",
+    "reason": "Modelo RF-11 detecto NTP con riesgo 100%",
+    "risk": 100,
+    "since": "23:44:16",
+    "sinceEpoch": 1794631456.921361,
+    "expiresEpoch": 1794631516.921361,
+    "status": "Bloqueada",
+    "source": "model"
+  }
+}

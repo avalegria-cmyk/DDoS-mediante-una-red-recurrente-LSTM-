@@ -1,0 +1,231 @@
+{
+  "http": {
+    "corridas": 5,
+    "bloqueadas": 5,
+    "s_mediana": 20.24,
+    "s_min": 19.26,
+    "s_max": 20.55,
+    "firewall_ms_mediana": 26.765,
+    "detalle": [
+      {
+        "corrida": "mitigacion_http_rep1.json",
+        "bloqueado": true,
+        "s_inicio_ataque_a_regla": 19.26,
+        "disparo": "regla_por_tasa",
+        "prob_modelo": 0.47,
+        "clase": "DDoS/DoS por tasa",
+        "firewall_ms": 33.141,
+        "origen_pps": 13475.0,
+        "origen_flujos_s": 3030.8,
+        "s_bloqueo_efectivo": 60.22,
+        "bloqueos_en_fase_legitima": 0,
+        "legitimo": {
+          "ok": 185,
+          "fallo": 22
+        },
+        "ataque_peticiones": {
+          "ok": 80308,
+          "fallo": 219363
+        },
+        "ataque_pps_udp": null
+      },
+      {
+        "corrida": "mitigacion_http_rep2.json",
+        "bloqueado": true,
+        "s_inicio_ataque_a_regla": 20.17,
+        "disparo": "regla_por_tasa",
+        "prob_modelo": 0.458,
+        "clase": "DDoS/DoS por tasa",
+        "firewall_ms": 26.88,
+        "origen_pps": 5272.3,
+        "origen_flujos_s": 1162.5,
+        "s_bloqueo_efectivo": 61.48,
+        "bloqueos_en_fase_legitima": 0,
+        "legitimo": {
+          "ok": 188,
+          "fallo": 26
+        },
+        "ataque_peticiones": {
+          "ok": 81668,
+          "fallo": 217795
+        },
+        "ataque_pps_udp": null
+      },
+      {
+        "corrida": "mitigacion_http_rep3.json",
+        "bloqueado": true,
+        "s_inicio_ataque_a_regla": 20.24,
+        "disparo": "regla_por_tasa",
+        "prob_modelo": 0.482,
+        "clase": "DDoS/DoS por tasa",
+        "firewall_ms": 26.162,
+        "origen_pps": 5159.6,
+        "origen_flujos_s": 1131.7,
+        "s_bloqueo_efectivo": 60.25,
+        "bloqueos_en_fase_legitima": 0,
+        "legitimo": {
+          "ok": 197,
+          "fallo": 24
+        },
+        "ataque_peticiones": {
+          "ok": 82162,
+          "fallo": 216146
+        },
+        "ataque_pps_udp": null
+      },
+      {
+        "corrida": "mitigacion_http_rep4.json",
+        "bloqueado": true,
+        "s_inicio_ataque_a_regla": 20.55,
+        "disparo": "regla_por_tasa",
+        "prob_modelo": 0.346,
+        "clase": "DDoS/DoS por tasa",
+        "firewall_ms": 26.335,
+        "origen_pps": 3157.5,
+        "origen_flujos_s": 703.1,
+        "s_bloqueo_efectivo": 61.6,
+        "bloqueos_en_fase_legitima": 0,
+        "legitimo": {
+          "ok": 206,
+          "fallo": 28
+        },
+        "ataque_peticiones": {
+          "ok": 81742,
+          "fallo": 222089
+        },
+        "ataque_pps_udp": null
+      },
+      {
+        "corrida": "mitigacion_http_rep5.json",
+        "bloqueado": true,
+        "s_inicio_ataque_a_regla": 20.31,
+        "disparo": "regla_por_tasa",
+        "prob_modelo": 0.215,
+        "clase": "DDoS/DoS por tasa",
+        "firewall_ms": 26.765,
+        "origen_pps": 63352.2,
+        "origen_flujos_s": 14285.2,
+        "s_bloqueo_efectivo": 60.18,
+        "bloqueos_en_fase_legitima": 0,
+        "legitimo": {
+          "ok": 214,
+          "fallo": 27
+        },
+        "ataque_peticiones": {
+          "ok": 80190,
+          "fallo": 216484
+        },
+        "ataque_pps_udp": null
+      }
+    ],
+    "legitimo_respondidas": 990,
+    "legitimo_fallidas": 127,
+    "peticiones_ataque_por_s": 4061
+  },
+  "udp": {
+    "corridas": 5,
+    "bloqueadas": 5,
+    "s_mediana": 20.58,
+    "s_min": 7.26,
+    "s_max": 22.43,
+    "firewall_ms_mediana": 33.386,
+    "detalle": [
+      {
+        "corrida": "mitigacion_udp_rep1.json",
+        "bloqueado": true,
+        "s_inicio_ataque_a_regla": 7.26,
+        "disparo": "modelo",
+        "prob_modelo": 0.914,
+        "clase": "NTP",
+        "firewall_ms": 36.079,
+        "origen_pps": 603.9,
+        "origen_flujos_s": 1.7,
+        "s_bloqueo_efectivo": null,
+        "bloqueos_en_fase_legitima": null,
+        "legitimo": null,
+        "ataque_peticiones": null,
+        "ataque_pps_udp": 2316
+      },
+      {
+        "corrida": "mitigacion_udp_rep2.json",
+        "bloqueado": true,
+        "s_inicio_ataque_a_regla": 7.31,
+        "disparo": "modelo",
+        "prob_modelo": 0.914,
+        "clase": "NTP",
+        "firewall_ms": 33.429,
+        "origen_pps": 540.9,
+        "origen_flujos_s": 0.1,
+        "s_bloqueo_efectivo": null,
+        "bloqueos_en_fase_legitima": null,
+        "legitimo": null,
+        "ataque_peticiones": null,
+        "ataque_pps_udp": 2318
+      },
+      {
+        "corrida": "mitigacion_udp_rep3.json",
+        "bloqueado": true,
+        "s_inicio_ataque_a_regla": 22.43,
+        "disparo": "modelo",
+        "prob_modelo": 0.906,
+        "clase": "NTP",
+        "firewall_ms": 33.386,
+        "origen_pps": 2163.5,
+        "origen_flujos_s": 0.1,
+        "s_bloqueo_efectivo": null,
+        "bloqueos_en_fase_legitima": null,
+        "legitimo": null,
+        "ataque_peticiones": null,
+        "ataque_pps_udp": 2210
+      },
+      {
+        "corrida": "mitigacion_udp_rep4.json",
+        "bloqueado": true,
+        "s_inicio_ataque_a_regla": 21.7,
+        "disparo": "modelo",
+        "prob_modelo": 0.906,
+        "clase": "NTP",
+        "firewall_ms": 33.356,
+        "origen_pps": 1853.9,
+        "origen_flujos_s": 0.1,
+        "s_bloqueo_efectivo": null,
+        "bloqueos_en_fase_legitima": null,
+        "legitimo": null,
+        "ataque_peticiones": null,
+        "ataque_pps_udp": 2025
+      },
+      {
+        "corrida": "mitigacion_udp_rep5.json",
+        "bloqueado": true,
+        "s_inicio_ataque_a_regla": 20.58,
+        "disparo": "modelo",
+        "prob_modelo": 0.906,
+        "clase": "NTP",
+        "firewall_ms": 23.535,
+        "origen_pps": 1931.1,
+        "origen_flujos_s": 0.1,
+        "s_bloqueo_efectivo": null,
+        "bloqueos_en_fase_legitima": null,
+        "legitimo": null,
+        "ataque_peticiones": null,
+        "ataque_pps_udp": 2016
+      }
+    ]
+  },
+  "duracion_bloqueo_s": {
+    "n": 15,
+    "min": 60.072,
+    "max": 60.752,
+    "configurado": 60
+  },
+  "errores_firewall": 0,
+  "falsos_positivos_por_flujo": {
+    "ventanas_sin_ataque": 28,
+    "flujos_legitimos": 729,
+    "marcados": 0,
+    "por_modelo": 0,
+    "por_regla_de_tasa": 0,
+    "tasa": 0.0,
+    "ip_atacante": "192.168.0.114"
+  }
+}

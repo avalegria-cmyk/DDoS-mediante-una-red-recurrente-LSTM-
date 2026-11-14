@@ -1,0 +1,26 @@
+{
+  "ataque": "inundacion UDP de un solo flujo (400 bytes, ~2282 pps, 20 s)",
+  "t_inicio": 1794629311.628412,
+  "t_bloqueo_visto": 1794629333.777372,
+  "s_ataque_a_bloqueo": 22.15,
+  "datagramas": 45630,
+  "evento": {
+    "t_registro_epoch": 1794629333.643456,
+    "hora": "2026-11-13T23:08:53.643",
+    "evento": "bloqueo",
+    "ip": "192.168.0.114",
+    "origen": "model",
+    "riesgo": 100,
+    "bloqueo_automatico": true,
+    "ttl_s": 60,
+    "t_deteccion_epoch": 1794629333.606495,
+    "flow_time": "2026-11-13 23:08:32",
+    "source_file": "flows-20261113-230832-367567.csv",
+    "attack": "NTP",
+    "probability": 0.9056499423946517,
+    "pps": 2257.6315675787887,
+    "firewall_ok": true,
+    "firewall_ms": 36.905,
+    "t_bloqueo_epoch": 1794629333.6434188
+  }
+}

@@ -1,11 +1,103 @@
 #!/usr/bin/env bash
+# Bloqueo y desbloqueo de una IP de origen en el firewall del host.
+#
+#   ddos-block-ip block   IP    (o solo: ddos-block-ip IP)
+#   ddos-block-ip unblock IP
+#   ddos-block-ip list
+#   ddos-block-ip flush
+#
+# macOS: firewall pf. Las IP se guardan en la tabla <ddos_shield> del anchor
+#        "ddos_shield", con la regla: block drop in quick from <ddos_shield> to any
+#        No se modifica /etc/pf.conf: el anchor se anade al conjunto de reglas en
+#        memoria y desaparece al reiniciar o con: sudo pfctl -f /etc/pf.conf
+# Linux: ufw, regla "deny from IP".
+#
+# Debe ejecutarse como root. La caducidad de los bloqueos la controla app.py
+# (BLOCK_TTL_SECONDS), que llama a "unblock" cuando vence el tiempo.
 set -euo pipefail
 
-IP="${1:-}"
-
-if [[ ! "$IP" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
-  echo "IP invalida"
-  exit 1
+ACTION="${1:-}"
+IP="${2:-}"
+if [[ "$ACTION" =~ ^[0-9] ]]; then  # compatibilidad: ddos-block-ip IP
+  IP="$ACTION"
+  ACTION="block"
 fi
 
-/usr/sbin/ufw insert 1 deny from "$IP" comment "DDoS Shield auto block"
+ANCHOR="ddos_shield"
+TABLE="ddos_shield"
+PFCTL="/sbin/pfctl"
+
+validar_ip() {
+  if [[ ! "$IP" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+    echo "IP invalida" >&2
+    exit 1
+  fi
+}
+
+pf_preparar() {
+  "$PFCTL" -E >/dev/null 2>&1 || true
+  # Referencia al anchor en el conjunto principal (solo en memoria).
+  if ! "$PFCTL" -sr 2>/dev/null | grep -q "anchor \"$ANCHOR\""; then
+    { cat /etc/pf.conf; echo "anchor \"$ANCHOR\""; } | "$PFCTL" -f - >/dev/null 2>&1
+  fi
+  # Reglas del anchor: tabla persistente + descarte de todo lo que venga de ella.
+  if ! "$PFCTL" -a "$ANCHOR" -sr 2>/dev/null | grep -q "<$TABLE>"; then
+    printf 'table <%s> persist\nblock drop in quick from <%s> to any\n' "$TABLE" "$TABLE" \
+      | "$PFCTL" -a "$ANCHOR" -f - >/dev/null 2>&1
+  fi
+}
+
+case "$(uname -s)" in
+  Darwin)
+    case "$ACTION" in
+      block)
+        validar_ip
+        pf_preparar
+        "$PFCTL" -a "$ANCHOR" -t "$TABLE" -T add "$IP" >/dev/null 2>&1
+        "$PFCTL" -k "$IP" >/dev/null 2>&1 || true  # corta las conexiones ya establecidas
+        ;;
+      unblock)
+        validar_ip
+        "$PFCTL" -a "$ANCHOR" -t "$TABLE" -T delete "$IP" >/dev/null 2>&1 || true
+        ;;
+      list)
+        "$PFCTL" -a "$ANCHOR" -t "$TABLE" -T show 2>/dev/null || true
+        ;;
+      flush)
+        "$PFCTL" -a "$ANCHOR" -t "$TABLE" -T flush >/dev/null 2>&1 || true
+        ;;
+      *)
+        echo "Uso: ddos-block-ip block|unblock IP  |  ddos-block-ip list|flush" >&2
+        exit 1
+        ;;
+    esac
+    ;;
+  Linux)
+    case "$ACTION" in
+      block)
+        validar_ip
+        /usr/sbin/ufw insert 1 deny from "$IP" comment "DDoS Shield auto block"
+        ;;
+      unblock)
+        validar_ip
+        /usr/sbin/ufw delete deny from "$IP" || true
+        ;;
+      list)
+        /usr/sbin/ufw status | grep "DDoS Shield" || true
+        ;;
+      flush)
+        /usr/sbin/ufw status | awk '/DDoS Shield/ {print $3}' | while read -r ip; do
+          /usr/sbin/ufw delete deny from "$ip" || true
+        done
+        ;;
+      *)
+        echo "Uso: ddos-block-ip block|unblock IP  |  ddos-block-ip list|flush" >&2
+        exit 1
+        ;;
+    esac
+    ;;
+  *)
+    echo "Sistema no soportado por este script" >&2
+    exit 1
+    ;;
+esac

@@ -1,0 +1,111 @@
+{
+  "modelo": "RandomForestClassifier",
+  "n_estimators": 180,
+  "variables": [
+    "Flow Duration",
+    "Total Fwd Packets",
+    "Total Backward Packets",
+    "Fwd Packets Length Total",
+    "Bwd Packets Length Total",
+    "Flow Packets/s",
+    "Flow Bytes/s",
+    "Flow IAT Mean",
+    "Flow IAT Std",
+    "Flow IAT Min",
+    "Flow IAT Max"
+  ],
+  "origen_flujos": "10 archivos de archive",
+  "entorno": {
+    "maquina": "macOS-27.0.1-arm64-arm-64bit",
+    "procesador": "arm",
+    "nucleos_logicos": 10,
+    "ram_total_gb": 17.179869184,
+    "python": "3.12.9"
+  },
+  "lotes": [
+    {
+      "flujos_por_lote": 1,
+      "latencia_lote_ms_mediana": 14.896667009452358,
+      "latencia_lote_ms_p95": 15.407096131821163,
+      "latencia_por_flujo_ms": 14.896667009452358,
+      "throughput_flujos_s": 67.1291101133879,
+      "cpu_pct_de_un_nucleo": 57.8,
+      "cpu_pct_del_equipo": 5.779999999999999,
+      "ram_mb": 509.476864,
+      "repeticiones": 20,
+      "duracion_total_s": 0.29566679202253
+    },
+    {
+      "flujos_por_lote": 10,
+      "latencia_lote_ms_mediana": 14.929312514141202,
+      "latencia_lote_ms_p95": 15.165045761386864,
+      "latencia_por_flujo_ms": 1.4929312514141202,
+      "throughput_flujos_s": 669.8232079024332,
+      "cpu_pct_de_un_nucleo": 60.9,
+      "cpu_pct_del_equipo": 6.09,
+      "ram_mb": 509.575168,
+      "repeticiones": 20,
+      "duracion_total_s": 0.2888299170299433
+    },
+    {
+      "flujos_por_lote": 100,
+      "latencia_lote_ms_mediana": 14.920500019798055,
+      "latencia_lote_ms_p95": 15.893083019182095,
+      "latencia_por_flujo_ms": 0.14920500019798055,
+      "throughput_flujos_s": 6702.188255575195,
+      "cpu_pct_de_un_nucleo": 107.3,
+      "cpu_pct_del_equipo": 10.73,
+      "ram_mb": 509.771776,
+      "repeticiones": 20,
+      "duracion_total_s": 0.30842533300165087
+    },
+    {
+      "flujos_por_lote": 1000,
+      "latencia_lote_ms_mediana": 15.120250027393922,
+      "latencia_lote_ms_p95": 15.375400346238166,
+      "latencia_por_flujo_ms": 0.015120250027393922,
+      "throughput_flujos_s": 66136.47249141136,
+      "cpu_pct_de_un_nucleo": 196.6,
+      "cpu_pct_del_equipo": 19.66,
+      "ram_mb": 509.984768,
+      "repeticiones": 20,
+      "duracion_total_s": 0.2999965419876389
+    },
+    {
+      "flujos_por_lote": 5000,
+      "latencia_lote_ms_mediana": 27.576479478739202,
+      "latencia_lote_ms_p95": 28.315927361836657,
+      "latencia_por_flujo_ms": 0.00551529589574784,
+      "throughput_flujos_s": 181313.9347194365,
+      "cpu_pct_de_un_nucleo": 271.7,
+      "cpu_pct_del_equipo": 27.169999999999998,
+      "ram_mb": 522.73152,
+      "repeticiones": 20,
+      "duracion_total_s": 0.5435109580284916
+    },
+    {
+      "flujos_por_lote": 10000,
+      "latencia_lote_ms_mediana": 32.96837498783134,
+      "latencia_lote_ms_p95": 40.17868775408715,
+      "latencia_por_flujo_ms": 0.003296837498783134,
+      "throughput_flujos_s": 303320.9857534989,
+      "cpu_pct_de_un_nucleo": 435.6,
+      "cpu_pct_del_equipo": 43.56,
+      "ram_mb": 562.823168,
+      "repeticiones": 20,
+      "duracion_total_s": 0.6656237079878338
+    },
+    {
+      "flujos_por_lote": 50000,
+      "latencia_lote_ms_mediana": 176.2881664908491,
+      "latencia_lote_ms_p95": 254.53282117669008,
+      "latencia_por_flujo_ms": 0.0035257633298169822,
+      "throughput_flujos_s": 283626.52465726016,
+      "cpu_pct_de_un_nucleo": 656.2,
+      "cpu_pct_del_equipo": 65.62,
+      "ram_mb": 808.157184,
+      "repeticiones": 20,
+      "duracion_total_s": 3.481533749960363
+    }
+  ]
+}

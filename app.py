@@ -46,7 +46,16 @@ LSTM_METADATA_PATH = MODEL_DIR / "lstm_runtime_metadata.json"
 
 PREDICTION_THRESHOLD = float(os.getenv("PREDICTION_THRESHOLD", "0.65"))
 AUTO_BLOCK = os.getenv("AUTO_BLOCK", "false").lower() == "true"
-BLOCK_SCRIPT = os.getenv("BLOCK_SCRIPT", "/usr/local/sbin/ddos-block-ip")
+_INSTALLED_BLOCK_SCRIPT = Path("/usr/local/sbin/ddos-block-ip")
+BLOCK_SCRIPT = os.getenv(
+    "BLOCK_SCRIPT",
+    str(_INSTALLED_BLOCK_SCRIPT if _INSTALLED_BLOCK_SCRIPT.exists() else BASE_DIR / "scripts" / "ddos-block-ip"),
+)
+# Los bloqueos son temporales: caducan a los BLOCK_TTL_SECONDS (0 = sin caducidad).
+BLOCK_TTL_SECONDS = int(os.getenv("BLOCK_TTL_SECONDS", "300"))
+BLOCK_USE_SUDO = os.getenv("BLOCK_USE_SUDO", "true").lower() == "true"
+MITIGATION_LOG_PATH = STATE_DIR / "eventos_mitigacion.jsonl"
+MODEL_DISPLAY_NAME = os.getenv("MODEL_DISPLAY_NAME", "RF-11" if MODEL_KIND == "xgboost" else MODEL_KIND.upper())
 SCAN_INTERVAL_SECONDS = float(os.getenv("SCAN_INTERVAL_SECONDS", "2"))
 MAX_EVENTS = int(os.getenv("MAX_EVENTS", "300"))
 DEFAULT_WHITELIST_IPS = ",".join(
@@ -77,6 +86,15 @@ PROTECTED_PORTS = {
 DEFAULT_CAPTURE_INTERFACE = "auto" if platform.system() == "Windows" else "en0"
 CAPTURE_INTERFACE = os.getenv("CAPTURE_INTERFACE", DEFAULT_CAPTURE_INTERFACE)
 CAPTURE_SECONDS = int(os.getenv("CAPTURE_SECONDS", "15"))
+# Regla por tasa: se evalua por IP de origen sobre la ventana de captura, no por flujo.
+# Un flujo corto y legitimo (p. ej. una peticion HTTP de 1 ms) tiene miles de paquetes/s
+# "por flujo", pero su origen envia muy pocos paquetes y abre pocas conexiones por ventana.
+# Limite de paquetes por ventana: bajo una inundacion la ventana se cierra antes (reaccion mas
+# rapida) y la conversion a flujos queda acotada. 0 = sin limite.
+CAPTURE_MAX_PACKETS = int(os.getenv("CAPTURE_MAX_PACKETS", "50000"))
+CAPTURE_SNAPLEN = int(os.getenv("CAPTURE_SNAPLEN", "0"))  # 0 = paquete completo (igual que en el entrenamiento)
+RATE_WINDOW_SECONDS = float(os.getenv("RATE_WINDOW_SECONDS", str(CAPTURE_SECONDS)))
+RATE_ATTACK_FLOWS_PER_SECOND = float(os.getenv("RATE_ATTACK_FLOWS_PER_SECOND", "20"))
 CAPTURE_USE_SUDO = os.getenv("CAPTURE_USE_SUDO", "true").lower() == "true"
 PCAP_DIR = Path(os.getenv("PCAP_DIR", BASE_DIR / "data" / "pcap"))
 CICFLOWMETER_CMD = os.getenv("CICFLOWMETER_CMD", "")
@@ -204,25 +222,45 @@ class DetectorState:
         self.capture_last_file: str | None = None
         self.capture_last_error: str | None = None
         self.capture_cycles = 0
+        self.capture_failed_cycles = 0
+        self.capture_windows: dict[str, float] = {}  # duracion real de la ventana de cada CSV
 
     def add_event(self, event: dict[str, Any]) -> None:
         with self.lock:
             self.traffic.appendleft(event)
             self.rows_processed += 1
 
-    def add_block(self, ip: str, reason: str, risk: int, source: str) -> None:
+    def add_block(self, ip: str, reason: str, risk: int, source: str) -> bool:
+        """Registra la IP. Devuelve False si ya estaba registrada."""
         with self.lock:
             if any(item["ip"] == ip for item in self.blocked_ips):
-                return
+                return False
+            now = time.time()
             item = {
                 "ip": ip,
                 "reason": reason,
                 "risk": risk,
                 "since": now_time(),
-                "status": "Bloqueada" if AUTO_BLOCK else "Detectada",
+                "sinceEpoch": now,
+                "expiresEpoch": now + BLOCK_TTL_SECONDS if BLOCK_TTL_SECONDS > 0 else None,
+                "status": "Detectada",
                 "source": source,
             }
             self.blocked_ips.insert(0, item)
+            return True
+
+    def set_block_status(self, ip: str, status: str) -> None:
+        with self.lock:
+            for item in self.blocked_ips:
+                if item["ip"] == ip:
+                    item["status"] = status
+
+    def pop_expired_blocks(self) -> list[dict[str, Any]]:
+        now = time.time()
+        with self.lock:
+            expired = [i for i in self.blocked_ips if i.get("expiresEpoch") and i["expiresEpoch"] <= now]
+            self.blocked_ips = [i for i in self.blocked_ips if i not in expired]
+            return expired
 
     def remove_block(self, ip: str) -> bool:
         with self.lock:
@@ -287,6 +325,8 @@ def startup() -> None:
     thread.start()
     capture_thread = threading.Thread(target=capture_loop, daemon=True)
     capture_thread.start()
+    expiry_thread = threading.Thread(target=block_expiry_loop, daemon=True)
+    expiry_thread.start()
 
 
 @app.get("/")
@@ -305,7 +345,11 @@ def health() -> dict[str, Any]:
         "model": str(sequence_model_path if MODEL_KIND in {"lstm", "gru"} else XGBOOST_MODEL_PATH),
         "flow_dir": str(FLOW_DIR),
         "auto_block": AUTO_BLOCK,
+        "block_ttl_seconds": BLOCK_TTL_SECONDS,
+        "block_script": BLOCK_SCRIPT,
         "threshold": PREDICTION_THRESHOLD,
+        "rate_rule": {"window_s": RATE_WINDOW_SECONDS, "source_pps": RATE_ATTACK_PPS,
+                      "source_flows_per_s": RATE_ATTACK_FLOWS_PER_SECOND},
         "timesteps": timesteps,
         "feature_count": len(feature_cols),
         "capture_enabled": state.capture_enabled,
@@ -356,9 +400,10 @@ def blocked_ips() -> dict[str, Any]:
 @app.post("/api/blocked-ips")
 def block_ip(request: BlockRequest) -> dict[str, Any]:
     validate_ip(request.ip)
-    if AUTO_BLOCK and not run_block_script(request.ip):
+    apply_block(request.ip, request.reason, 100, "manual")
+    if AUTO_BLOCK and any(i["ip"] == request.ip and i["status"] != "Bloqueada" for i in state.blocked_ips):
+        state.remove_block(request.ip)
         raise HTTPException(status_code=500, detail=state.last_error or "No se pudo aplicar el bloqueo")
-    state.add_block(request.ip, request.reason, 100, "manual")
     return {"ok": True, "ip": request.ip}
 
 
@@ -366,7 +411,12 @@ def block_ip(request: BlockRequest) -> dict[str, Any]:
 def unblock_ip(ip: str) -> dict[str, Any]:
     validate_ip(ip)
     removed = state.remove_block(ip)
-    return {"ok": True, "ip": ip, "removed": removed}
+    firewall_ok = None
+    if removed and AUTO_BLOCK:
+        firewall_ok = run_block_script(ip, "unblock")
+    if removed:
+        log_mitigation({"evento": "desbloqueo_manual", "ip": ip, "firewall_ok": firewall_ok})
+    return {"ok": True, "ip": ip, "removed": removed, "firewallOk": firewall_ok}
 
 
 @app.get("/api/model")
@@ -430,7 +480,9 @@ def model_info() -> dict[str, Any]:
 def capture_status() -> dict[str, Any]:
     with state.lock:
         return {
-            "enabled": state.capture_enabled,
+            "failedCycles": state.capture_failed_cycles,
+        "maxPacketsPerWindow": CAPTURE_MAX_PACKETS,
+        "enabled": state.capture_enabled,
             "running": state.capture_running,
             "interface": CAPTURE_INTERFACE,
             "captureSeconds": CAPTURE_SECONDS,
@@ -489,10 +541,12 @@ def capture_loop() -> None:
         try:
             run_capture_cycle()
         except Exception as exc:
+            # Un ciclo fallido (p. ej. una conversion que excede el tiempo durante una inundacion)
+            # no debe apagar la captura: se registra el error y se continua con la siguiente ventana.
             with state.lock:
                 state.capture_last_error = str(exc)
                 state.capture_running = False
-                state.capture_enabled = False
+                state.capture_failed_cycles += 1
             time.sleep(3)
 
 
@@ -506,6 +560,7 @@ def run_capture_cycle() -> None:
     csv_path = FLOW_DIR / f"flows-{timestamp}.csv"
     partial_csv_path = csv_path.with_suffix(".partial")
 
+    capture_started = time.time()
     try:
         if CAPTURE_COMMAND:
             capture_command = CAPTURE_COMMAND.format(
@@ -522,6 +577,8 @@ def run_capture_cycle() -> None:
                 "-i",
                 CAPTURE_INTERFACE,
                 "-nn",
+                *(["-s", str(CAPTURE_SNAPLEN)] if CAPTURE_SNAPLEN > 0 else []),
+                *(["-c", str(CAPTURE_MAX_PACKETS)] if CAPTURE_MAX_PACKETS > 0 else []),
                 "-G",
                 str(CAPTURE_SECONDS),
                 "-W",
@@ -553,6 +610,12 @@ def run_capture_cycle() -> None:
                     with state.lock:
                         state.capture_last_error = None
                     return
+
+        capture_elapsed = max(time.time() - capture_started, 0.5)
+        with state.lock:
+            state.capture_windows[csv_path.name] = capture_elapsed
+            while len(state.capture_windows) > 200:
+                state.capture_windows.pop(next(iter(state.capture_windows)))
 
         if not CICFLOWMETER_CMD:
             raise RuntimeError(
@@ -610,6 +673,7 @@ def cleanup_capture_files(csv_path: Path) -> None:
 
 def process_xgboost_file(csv_path: Path, df: pd.DataFrame) -> None:
     records = df.to_dict(orient="records")
+    source_rates = source_rate_stats(df, state.capture_windows.get(csv_path.name))
     X = prepare_xgboost_features(df)
     probability_matrix = model.predict_proba(X)
     multiclass_labels = class_labels if "Benign" in class_labels and len(class_labels) > 2 else []
@@ -652,13 +716,13 @@ def process_xgboost_file(csv_path: Path, df: pd.DataFrame) -> None:
         pps = safe_number(row.get("Flow Packets/s", 0))
         bps = safe_number(row.get("Flow Bytes/s", 0))
 
-        rate_attack = is_rate_attack_flow(port, pps)
+        source_rate = source_rates.get(str(src_ip), {"pps": 0.0, "fps": 0.0})
+        rate_attack = is_rate_attack_source(source_rate)
         local_noise = is_local_noise_flow(row, dst_ip, port, pps, bps)
         low_rate_model_noise = pps < MODEL_ATTACK_MIN_PPS and not rate_attack
         risk = round(probability * 100)
         if rate_attack:
-            rate_risk = min(100, round((pps / max(RATE_ATTACK_PPS, 1)) * 65))
-            risk = max(risk, rate_risk)
+            risk = max(risk, rate_risk_score(source_rate))
 
         decision = "Bloquear" if (probability >= PREDICTION_THRESHOLD and not low_rate_model_noise) or rate_attack else "Permitir"
         if local_noise:
@@ -684,6 +748,8 @@ def process_xgboost_file(csv_path: Path, df: pd.DataFrame) -> None:
             "attack": attack,
             "pps": round(pps),
             "bps": round(bps),
+            "sourcePps": round(source_rate["pps"], 2),
+            "sourceFlowsPerSecond": round(source_rate["fps"], 2),
             "port": int(safe_number(port)),
             "risk": risk,
             "decision": decision,
@@ -698,13 +764,15 @@ def process_xgboost_file(csv_path: Path, df: pd.DataFrame) -> None:
         state.add_event(event)
 
         if decision == "Bloquear" and src_ip != "desconocida" and not is_whitelisted(str(src_ip)):
-            reason = f"Modelo {MODEL_KIND.upper()} detecto {attack} con probabilidad {risk}%"
-            state.add_block(str(src_ip), reason, risk, "model")
-            if AUTO_BLOCK:
-                run_block_script(str(src_ip))
+            reason = f"Modelo {MODEL_DISPLAY_NAME} detecto {attack} con riesgo {risk}%"
+            apply_block(str(src_ip), reason, risk, "model", flow_time=str(event_time), source_file=csv_path.name,
+                        attack=str(attack), probability=float(probability), pps=float(pps),
+                        source_pps=float(source_rate["pps"]), source_flows_per_s=float(source_rate["fps"]),
+                        disparo="regla_por_tasa" if rate_attack and probability < PREDICTION_THRESHOLD else "modelo")
 
 
 def process_sequence_file(csv_path: Path, df: pd.DataFrame) -> None:
+    source_rates = source_rate_stats(df, state.capture_windows.get(csv_path.name))
     records = df.to_dict(orient="records")
     X_scaled = prepare_lstm_features(df)
     pending_events: list[dict[str, Any]] = []
@@ -795,11 +863,11 @@ def process_sequence_file(csv_path: Path, df: pd.DataFrame) -> None:
     for event, probability in zip(pending_events, probabilities):
         probability = float(probability)
         model_attack = probability >= PREDICTION_THRESHOLD
-        rate_attack = is_rate_attack_flow(event["port"], event["pps"])
+        source_rate = source_rates.get(str(event["sourceIp"]), {"pps": 0.0, "fps": 0.0})
+        rate_attack = is_rate_attack_source(source_rate)
         risk = round(probability * 100)
         if rate_attack:
-            rate_risk = min(100, round((event["pps"] / max(RATE_ATTACK_PPS, 1)) * 65))
-            risk = max(risk, rate_risk)
+            risk = max(risk, rate_risk_score(source_rate))
         decision = "Bloquear" if model_attack or rate_attack else "Permitir"
         event["probability"] = round(probability, 6)
         event["risk"] = risk
@@ -814,10 +882,9 @@ def process_sequence_file(csv_path: Path, df: pd.DataFrame) -> None:
 
         src_ip = event["sourceIp"]
         if decision == "Bloquear" and src_ip != "desconocida" and not is_whitelisted(src_ip):
-            reason = f"Detector {MODEL_KIND.upper()} detecto ataque con riesgo {risk}%"
-            state.add_block(src_ip, reason, risk, MODEL_KIND)
-            if AUTO_BLOCK:
-                run_block_script(src_ip)
+            reason = f"Detector {MODEL_DISPLAY_NAME} detecto ataque con riesgo {risk}%"
+            apply_block(src_ip, reason, risk, MODEL_KIND, flow_time=str(event.get("time", "")),
+                        source_file=csv_path.name, attack=str(event["attack"]))
 
 
 def prepare_xgboost_features(df: pd.DataFrame) -> pd.DataFrame:
@@ -853,12 +920,41 @@ def is_local_noise_flow(row: dict[str, Any], dst_ip: Any, port: Any, pps: float,
     return False
 
 
-def is_rate_attack_flow(port: Any, pps: float) -> bool:
-    if pps < RATE_ATTACK_PPS:
-        return False
-    if RATE_ATTACK_ANY_PORT:
-        return True
-    return int(safe_number(port)) in PROTECTED_PORTS
+def source_rate_stats(df: pd.DataFrame, window_seconds: float | None = None) -> dict[str, dict[str, float]]:
+    """Paquetes/s enviados y flujos nuevos/s por IP de origen en la ventana de captura.
+
+    window_seconds es la duracion real de la ventana (puede ser menor que CAPTURE_SECONDS
+    cuando se alcanza CAPTURE_MAX_PACKETS); si no se conoce se usa RATE_WINDOW_SECONDS.
+    """
+    src_col = next((col for col in IP_COLUMNS if col in df.columns), None)
+    if src_col is None or df.empty:
+        return {}
+    work = df
+    port_col = next((col for col in PORT_COLUMNS if col in df.columns), None)
+    if not RATE_ATTACK_ANY_PORT and port_col is not None:
+        work = df[pd.to_numeric(df[port_col], errors="coerce").isin(PROTECTED_PORTS)]
+    if "Total Fwd Packets" in work.columns:
+        sent = pd.to_numeric(work["Total Fwd Packets"], errors="coerce").fillna(0)
+    else:
+        sent = pd.Series(0.0, index=work.index)
+    grouped = pd.DataFrame({"src": work[src_col].astype(str), "sent": sent}).groupby("src")["sent"].agg(["sum", "count"])
+    window = max(window_seconds or RATE_WINDOW_SECONDS, 0.5)
+    return {
+        str(src): {"pps": float(row["sum"]) / window, "fps": float(row["count"]) / window}
+        for src, row in grouped.iterrows()
+    }
+
+
+def is_rate_attack_source(source_rate: dict[str, float]) -> bool:
+    return source_rate["pps"] >= RATE_ATTACK_PPS or source_rate["fps"] >= RATE_ATTACK_FLOWS_PER_SECOND
+
+
+def rate_risk_score(source_rate: dict[str, float]) -> int:
+    ratio = max(
+        source_rate["pps"] / max(RATE_ATTACK_PPS, 1),
+        source_rate["fps"] / max(RATE_ATTACK_FLOWS_PER_SECOND, 1),
+    )
+    return min(100, round(ratio * 65))
 
 
 def is_non_unicast_ip(value: str) -> bool:
@@ -883,16 +979,76 @@ def normalize_cicflowmeter_columns(df: pd.DataFrame) -> pd.DataFrame:
     return normalized
 
 
-def run_block_script(ip: str) -> bool:
+def run_block_script(ip: str, action: str = "block") -> bool:
+    """Ejecuta el script de firewall (block/unblock) para una IP."""
     validate_ip(ip)
-    if platform.system() == "Windows":
-        result = subprocess.run([BLOCK_SCRIPT, ip], shell=True, check=False, timeout=8)
-    else:
-        result = subprocess.run(["sudo", BLOCK_SCRIPT, ip], check=False, timeout=5)
+    try:
+        if platform.system() == "Windows":
+            args = [BLOCK_SCRIPT, ip] if action == "block" else [BLOCK_SCRIPT, action, ip]
+            result = subprocess.run(args, shell=True, check=False, timeout=8)
+        else:
+            command = [BLOCK_SCRIPT, action, ip]
+            if BLOCK_USE_SUDO and getattr(os, "geteuid", lambda: 1)() != 0:
+                command = ["sudo", "-n", *command]
+            result = subprocess.run(command, check=False, timeout=8, capture_output=True, text=True)
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        state.last_error = f"No se pudo ejecutar el script de firewall ({action} {ip}): {exc}"
+        return False
     if result.returncode != 0:
-        state.last_error = f"No se pudo bloquear {ip}; el script termino con codigo {result.returncode}."
+        state.last_error = (
+            f"No se pudo aplicar '{action}' a {ip}; el script de firewall termino con codigo {result.returncode}."
+        )
         return False
     return True
+
+
+def apply_block(ip: str, reason: str, risk: int, source: str, **details: Any) -> None:
+    """Registra la IP y, si AUTO_BLOCK=true, aplica la regla temporal en el firewall."""
+    detected_at = time.time()
+    if not state.add_block(ip, reason, risk, source):
+        return
+    record: dict[str, Any] = {
+        "evento": "bloqueo" if AUTO_BLOCK else "deteccion",
+        "ip": ip,
+        "origen": source,
+        "riesgo": risk,
+        "bloqueo_automatico": AUTO_BLOCK,
+        "ttl_s": BLOCK_TTL_SECONDS,
+        "t_deteccion_epoch": detected_at,
+        **details,
+    }
+    if AUTO_BLOCK:
+        started = time.perf_counter()
+        ok = run_block_script(ip, "block")
+        record["firewall_ok"] = ok
+        record["firewall_ms"] = round(1000 * (time.perf_counter() - started), 3)
+        record["t_bloqueo_epoch"] = time.time()
+        state.set_block_status(ip, "Bloqueada" if ok else "Error de bloqueo")
+    log_mitigation(record)
+
+
+def block_expiry_loop() -> None:
+    """Retira los bloqueos vencidos del estado y del firewall (reglas temporales)."""
+    while True:
+        try:
+            for item in state.pop_expired_blocks():
+                firewall_ok = run_block_script(item["ip"], "unblock") if item["status"] == "Bloqueada" else None
+                log_mitigation({"evento": "caducidad", "ip": item["ip"], "firewall_ok": firewall_ok,
+                                "duracion_s": round(time.time() - item["sinceEpoch"], 3)})
+        except Exception as exc:
+            state.last_error = str(exc)
+        time.sleep(1)
+
+
+def log_mitigation(record: dict[str, Any]) -> None:
+    """Bitacora auditable de detecciones, bloqueos y desbloqueos (una linea JSON por evento)."""
+    record = {"t_registro_epoch": time.time(), "hora": datetime.now().isoformat(timespec="milliseconds"), **record}
+    try:
+        STATE_DIR.mkdir(parents=True, exist_ok=True)
+        with MITIGATION_LOG_PATH.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
+    except OSError as exc:
+        state.last_error = f"No se pudo escribir la bitacora de mitigacion: {exc}"
 
 
 def is_whitelisted(ip: str) -> bool:

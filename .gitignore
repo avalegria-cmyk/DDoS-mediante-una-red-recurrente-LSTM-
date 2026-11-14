@@ -17,3 +17,8 @@ data/
 *.partial
 
 modelo_rf_multiclase/xgboost.pkl
+
+# Experimentos: capturas de red y registros locales
+experimentos/capturas/
+experimentos/resultados/log_*.txt
+experimentos/resultados/mitigacion_flujos.csv

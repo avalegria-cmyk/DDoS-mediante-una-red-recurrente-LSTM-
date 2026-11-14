@@ -91,3 +91,24 @@ sudo WHITELIST_IPS="127.0.0.1,172.64.148.235,17.248.201.71" CAPTURE_INTERFACE=en
 ```bash
 sudo ./scripts/apagar_rf11.sh
 ```
+
+## Bloqueo en firewall (mitigacion)
+
+Por defecto el detector solo registra las IP detectadas (`AUTO_BLOCK=false`). Para aplicar reglas reales:
+
+```bash
+sudo AUTO_BLOCK=true BLOCK_TTL_SECONDS=300 CAPTURE_INTERFACE=en0 ./scripts/iniciar_admin_mac_rf11.sh
+```
+
+- macOS: `scripts/ddos-block-ip` usa `pf`. Las IP se agregan a la tabla `<ddos_shield>` del anchor `ddos_shield`, con la regla `block drop in quick from <ddos_shield> to any`. No modifica `/etc/pf.conf`.
+- Linux: usa `ufw deny from IP`.
+- Los bloqueos son temporales: caducan a los `BLOCK_TTL_SECONDS` segundos (300 por defecto; `0` = sin caducidad).
+- Desbloquear una IP desde el dashboard tambien retira la regla del firewall.
+- Cada deteccion, bloqueo, desbloqueo y caducidad queda en `data/state/eventos_mitigacion.jsonl` con marcas de tiempo.
+
+Ver y limpiar las IP bloqueadas a mano:
+
+```bash
+sudo ./scripts/ddos-block-ip list
+sudo ./scripts/ddos-block-ip flush
+```

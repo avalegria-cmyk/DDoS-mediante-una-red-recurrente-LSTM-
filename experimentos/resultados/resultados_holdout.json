@@ -1,0 +1,3073 @@
+{
+  "protocolo": {
+    "split": "holdout",
+    "tarea": "binaria (Benign=0, DDoS=1)",
+    "unidad_de_evaluacion": "ultimo flujo de cada ventana; identica para todos los modelos",
+    "timesteps": 10,
+    "stride": 2,
+    "max_rows_per_file": 12000,
+    "semillas": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ],
+    "epocas_max": 12,
+    "preprocesamiento": "inf->NaN, imputacion por mediana y StandardScaler ajustados solo en entrenamiento",
+    "modelo_de_referencia_mcnemar": "rf11_multi"
+  },
+  "datos": {
+    "archive_dir": "archive",
+    "archivos": [
+      {
+        "archivo": "DNS-testing.parquet",
+        "filas_usadas": 6703,
+        "rol": "test",
+        "etiquetas": {
+          "DNS": 3669,
+          "Benign": 3034
+        }
+      },
+      {
+        "archivo": "LDAP-testing.parquet",
+        "filas_usadas": 2831,
+        "rol": "test",
+        "etiquetas": {
+          "LDAP": 1440,
+          "Benign": 1391
+        }
+      },
+      {
+        "archivo": "LDAP-training.parquet",
+        "filas_usadas": 6715,
+        "rol": "train",
+        "etiquetas": {
+          "Benign": 4585,
+          "LDAP": 1884,
+          "NetBIOS": 246
+        }
+      },
+      {
+        "archivo": "MSSQL-testing.parquet",
+        "filas_usadas": 8083,
+        "rol": "test",
+        "etiquetas": {
+          "MSSQL": 6212,
+          "Benign": 1871
+        }
+      },
+      {
+        "archivo": "MSSQL-training.parquet",
+        "filas_usadas": 10974,
+        "rol": "train",
+        "etiquetas": {
+          "MSSQL": 8378,
+          "Benign": 2574,
+          "LDAP": 22
+        }
+      },
+      {
+        "archivo": "NTP-testing.parquet",
+        "filas_usadas": 12000,
+        "rol": "test",
+        "etiquetas": {
+          "NTP": 10833,
+          "Benign": 1167
+        }
+      },
+      {
+        "archivo": "NetBIOS-testing.parquet",
+        "filas_usadas": 2225,
+        "rol": "test",
+        "etiquetas": {
+          "Benign": 1627,
+          "NetBIOS": 598
+        }
+      },
+      {
+        "archivo": "NetBIOS-training.parquet",
+        "filas_usadas": 1631,
+        "rol": "train",
+        "etiquetas": {
+          "Benign": 1233,
+          "NetBIOS": 398
+        }
+      },
+      {
+        "archivo": "Portmap-training.parquet",
+        "filas_usadas": 5105,
+        "rol": "train",
+        "etiquetas": {
+          "Benign": 4420,
+          "Portmap": 685
+        }
+      },
+      {
+        "archivo": "SNMP-testing.parquet",
+        "filas_usadas": 4018,
+        "rol": "test",
+        "etiquetas": {
+          "SNMP": 2717,
+          "Benign": 1301
+        }
+      },
+      {
+        "archivo": "Syn-testing.parquet",
+        "filas_usadas": 907,
+        "rol": "test",
+        "etiquetas": {
+          "Syn": 533,
+          "Benign": 374
+        }
+      },
+      {
+        "archivo": "Syn-training.parquet",
+        "filas_usadas": 12000,
+        "rol": "train",
+        "etiquetas": {
+          "Syn": 7398,
+          "Benign": 4602
+        }
+      },
+      {
+        "archivo": "TFTP-testing.parquet",
+        "filas_usadas": 12000,
+        "rol": "test",
+        "etiquetas": {
+          "TFTP": 9707,
+          "Benign": 2293
+        }
+      },
+      {
+        "archivo": "UDP-testing.parquet",
+        "filas_usadas": 12000,
+        "rol": "test",
+        "etiquetas": {
+          "UDP": 10039,
+          "Benign": 1961
+        }
+      },
+      {
+        "archivo": "UDP-training.parquet",
+        "filas_usadas": 12000,
+        "rol": "train",
+        "etiquetas": {
+          "UDP": 10011,
+          "Benign": 1897,
+          "MSSQL": 92
+        }
+      },
+      {
+        "archivo": "UDPLag-testing.parquet",
+        "filas_usadas": 12000,
+        "rol": "test",
+        "etiquetas": {
+          "UDPLag": 8533,
+          "Benign": 3417,
+          "WebDDoS": 50
+        }
+      },
+      {
+        "archivo": "UDPLag-training.parquet",
+        "filas_usadas": 12000,
+        "rol": "train",
+        "etiquetas": {
+          "Syn": 5248,
+          "Benign": 3564,
+          "UDP": 3135,
+          "UDPLag": 53
+        }
+      }
+    ],
+    "n_variables": 77,
+    "variables_77": [
+      "Protocol",
+      "Flow Duration",
+      "Total Fwd Packets",
+      "Total Backward Packets",
+      "Fwd Packets Length Total",
+      "Bwd Packets Length Total",
+      "Fwd Packet Length Max",
+      "Fwd Packet Length Min",
+      "Fwd Packet Length Mean",
+      "Fwd Packet Length Std",
+      "Bwd Packet Length Max",
+      "Bwd Packet Length Min",
+      "Bwd Packet Length Mean",
+      "Bwd Packet Length Std",
+      "Flow Bytes/s",
+      "Flow Packets/s",
+      "Flow IAT Mean",
+      "Flow IAT Std",
+      "Flow IAT Max",
+      "Flow IAT Min",
+      "Fwd IAT Total",
+      "Fwd IAT Mean",
+      "Fwd IAT Std",
+      "Fwd IAT Max",
+      "Fwd IAT Min",
+      "Bwd IAT Total",
+      "Bwd IAT Mean",
+      "Bwd IAT Std",
+      "Bwd IAT Max",
+      "Bwd IAT Min",
+      "Fwd PSH Flags",
+      "Bwd PSH Flags",
+      "Fwd URG Flags",
+      "Bwd URG Flags",
+      "Fwd Header Length",
+      "Bwd Header Length",
+      "Fwd Packets/s",
+      "Bwd Packets/s",
+      "Packet Length Min",
+      "Packet Length Max",
+      "Packet Length Mean",
+      "Packet Length Std",
+      "Packet Length Variance",
+      "FIN Flag Count",
+      "SYN Flag Count",
+      "RST Flag Count",
+      "PSH Flag Count",
+      "ACK Flag Count",
+      "URG Flag Count",
+      "CWE Flag Count",
+      "ECE Flag Count",
+      "Down/Up Ratio",
+      "Avg Packet Size",
+      "Avg Fwd Segment Size",
+      "Avg Bwd Segment Size",
+      "Fwd Avg Bytes/Bulk",
+      "Fwd Avg Packets/Bulk",
+      "Fwd Avg Bulk Rate",
+      "Bwd Avg Bytes/Bulk",
+      "Bwd Avg Packets/Bulk",
+      "Bwd Avg Bulk Rate",
+      "Subflow Fwd Packets",
+      "Subflow Fwd Bytes",
+      "Subflow Bwd Packets",
+      "Subflow Bwd Bytes",
+      "Init Fwd Win Bytes",
+      "Init Bwd Win Bytes",
+      "Fwd Act Data Packets",
+      "Fwd Seg Size Min",
+      "Active Mean",
+      "Active Std",
+      "Active Max",
+      "Active Min",
+      "Idle Mean",
+      "Idle Std",
+      "Idle Max",
+      "Idle Min"
+    ],
+    "variables_47": [
+      "Protocol",
+      "Flow Duration",
+      "Total Fwd Packets",
+      "Total Backward Packets",
+      "Fwd Packets Length Total",
+      "Bwd Packets Length Total",
+      "Fwd Packet Length Max",
+      "Fwd Packet Length Min",
+      "Fwd Packet Length Mean",
+      "Fwd Packet Length Std",
+      "Bwd Packet Length Max",
+      "Bwd Packet Length Min",
+      "Bwd Packet Length Mean",
+      "Bwd Packet Length Std",
+      "Flow Bytes/s",
+      "Flow Packets/s",
+      "Flow IAT Mean",
+      "Flow IAT Std",
+      "Flow IAT Max",
+      "Flow IAT Min",
+      "Fwd IAT Total",
+      "Fwd IAT Mean",
+      "Fwd IAT Std",
+      "Fwd IAT Max",
+      "Fwd IAT Min",
+      "Bwd IAT Total",
+      "Bwd IAT Mean",
+      "Bwd IAT Std",
+      "Bwd IAT Max",
+      "Bwd IAT Min",
+      "Fwd Header Length",
+      "Bwd Header Length",
+      "Fwd Packets/s",
+      "Bwd Packets/s",
+      "Packet Length Min",
+      "Packet Length Max",
+      "Packet Length Mean",
+      "Packet Length Std",
+      "Packet Length Variance",
+      "Down/Up Ratio",
+      "Avg Packet Size",
+      "Avg Fwd Segment Size",
+      "Avg Bwd Segment Size",
+      "Subflow Fwd Packets",
+      "Subflow Fwd Bytes",
+      "Subflow Bwd Packets",
+      "Subflow Bwd Bytes"
+    ],
+    "variables_25": [
+      "Packet Length Min",
+      "Fwd Packet Length Min",
+      "Avg Packet Size",
+      "Bwd Packets/s",
+      "Fwd Packet Length Mean",
+      "Avg Fwd Segment Size",
+      "Flow Packets/s",
+      "Fwd Packets Length Total",
+      "Subflow Fwd Bytes",
+      "Packet Length Mean",
+      "Avg Bwd Segment Size",
+      "Bwd Packet Length Mean",
+      "Flow IAT Max",
+      "Fwd Packets/s",
+      "Fwd IAT Max",
+      "Bwd Packet Length Max",
+      "Flow IAT Mean",
+      "Down/Up Ratio",
+      "Fwd IAT Mean",
+      "Packet Length Variance",
+      "Flow IAT Std",
+      "Packet Length Std",
+      "Bwd Packets Length Total",
+      "Fwd Packet Length Max",
+      "Packet Length Max"
+    ],
+    "variables_11": [
+      "Flow Duration",
+      "Total Fwd Packets",
+      "Total Backward Packets",
+      "Fwd Packets Length Total",
+      "Bwd Packets Length Total",
+      "Flow Packets/s",
+      "Flow Bytes/s",
+      "Flow IAT Mean",
+      "Flow IAT Std",
+      "Flow IAT Min",
+      "Flow IAT Max"
+    ],
+    "filas_train": 60425,
+    "filas_test": 72767,
+    "clases_train": {
+      "Benign": 22875,
+      "UDP": 13146,
+      "Syn": 12646,
+      "MSSQL": 8470,
+      "LDAP": 1906,
+      "Portmap": 685,
+      "NetBIOS": 644,
+      "UDPLag": 53
+    },
+    "clases_test_evaluadas": {
+      "Benign": 9196,
+      "NTP": 5412,
+      "UDP": 5015,
+      "TFTP": 4872,
+      "UDPLag": 4258,
+      "MSSQL": 3102,
+      "DNS": 1830,
+      "SNMP": 1354,
+      "LDAP": 716,
+      "NetBIOS": 295,
+      "Syn": 262,
+      "WebDDoS": 29
+    },
+    "ventanas_train": {
+      "ventanas": 30183,
+      "ventanas_benignas": 11437,
+      "ventanas_ataque": 18746,
+      "fraccion_ventanas_mixtas_binario": 0.0009939369843951894,
+      "fraccion_ventanas_mixtas_multiclase": 0.18225491170526456,
+      "exactitud_copiando_etiqueta_flujo_anterior": 0.9999337375343736,
+      "exactitud_mayoria_de_los_flujos_previos": 0.9994699002749893
+    },
+    "ventanas_test": {
+      "ventanas": 36341,
+      "ventanas_benignas": 9196,
+      "ventanas_ataque": 27145,
+      "fraccion_ventanas_mixtas_binario": 0.1465562312539556,
+      "fraccion_ventanas_mixtas_multiclase": 0.15318785944250296,
+      "exactitud_copiando_etiqueta_flujo_anterior": 0.9476624198563606,
+      "exactitud_mayoria_de_los_flujos_previos": 0.9668968933160893
+    }
+  },
+  "hiperparametros": {
+    "random_forest": {
+      "n_estimators": 180,
+      "max_depth": 18,
+      "min_samples_leaf": 2,
+      "class_weight": "balanced_subsample",
+      "n_jobs": -1
+    },
+    "xgboost": {
+      "n_estimators": 300,
+      "max_depth": 6,
+      "learning_rate": 0.1,
+      "subsample": 0.8,
+      "colsample_bytree": 0.8,
+      "tree_method": "hist",
+      "n_jobs": -1,
+      "eval_metric": "logloss",
+      "scale_pos_weight": "n_benign/n_ataque (train)"
+    },
+    "mlp": {
+      "hidden_layer_sizes": [
+        64,
+        32
+      ],
+      "activation": "relu",
+      "solver": "adam",
+      "learning_rate_init": 0.001,
+      "batch_size": 128,
+      "max_iter": 50,
+      "early_stopping": true,
+      "validation_fraction": 0.2,
+      "n_iter_no_change": 3
+    },
+    "isolation_forest": {
+      "n_estimators": 200,
+      "max_samples": 256,
+      "contamination": "auto",
+      "n_jobs": -1,
+      "entrenado_con": "solo flujos Benign de entrenamiento",
+      "umbral": "percentil 95.0 de la puntuacion en Benign de entrenamiento"
+    },
+    "lstm_gru": {
+      "units": 64,
+      "dropout_1": 0.3,
+      "dense": 32,
+      "dropout_2": 0.2,
+      "learning_rate": 0.001,
+      "batch_size": 128,
+      "patience": 3,
+      "validation_split": 0.2,
+      "class_weight": "balanced",
+      "umbral": 0.5
+    }
+  },
+  "entorno": {
+    "python": "3.12.9",
+    "maquina": "macOS-27.0.1-arm64-arm-64bit",
+    "procesador": "arm"
+  },
+  "seleccion_11_variables": [
+    {
+      "variable": "Flow Duration",
+      "posicion_en_rf77": 43,
+      "importancia_en_rf77": 0.00518393215073618
+    },
+    {
+      "variable": "Total Fwd Packets",
+      "posicion_en_rf77": 45,
+      "importancia_en_rf77": 0.004510788726749902
+    },
+    {
+      "variable": "Total Backward Packets",
+      "posicion_en_rf77": 44,
+      "importancia_en_rf77": 0.0049982697274794236
+    },
+    {
+      "variable": "Fwd Packets Length Total",
+      "posicion_en_rf77": 18,
+      "importancia_en_rf77": 0.019046576071312236
+    },
+    {
+      "variable": "Bwd Packets Length Total",
+      "posicion_en_rf77": 14,
+      "importancia_en_rf77": 0.02386447652217945
+    },
+    {
+      "variable": "Flow Packets/s",
+      "posicion_en_rf77": 39,
+      "importancia_en_rf77": 0.006025018996212941
+    },
+    {
+      "variable": "Flow Bytes/s",
+      "posicion_en_rf77": 41,
+      "importancia_en_rf77": 0.005780550246393644
+    },
+    {
+      "variable": "Flow IAT Mean",
+      "posicion_en_rf77": 11,
+      "importancia_en_rf77": 0.024612916936438772
+    },
+    {
+      "variable": "Flow IAT Std",
+      "posicion_en_rf77": 34,
+      "importancia_en_rf77": 0.01033279806767522
+    },
+    {
+      "variable": "Flow IAT Min",
+      "posicion_en_rf77": 56,
+      "importancia_en_rf77": 0.0016523367293130946
+    },
+    {
+      "variable": "Flow IAT Max",
+      "posicion_en_rf77": 33,
+      "importancia_en_rf77": 0.010526950197079842
+    }
+  ],
+  "resultados": {
+    "rf11_multi": {
+      "nombre": "Compact Random Forest (11 features, multiclass grouped, deployed)",
+      "repeticiones": [
+        {
+          "accuracy": 0.8700641149115325,
+          "precision": 0.9986656584975314,
+          "recall": 0.827150488119359,
+          "f1": 0.9048520996211816,
+          "auc_roc": 0.9955149619778306,
+          "auc_pr": 0.9982828787691951,
+          "balanced_accuracy": 0.9119441000840379,
+          "fpr": 0.0032622879512831664,
+          "tn": 9166,
+          "fp": 30,
+          "fn": 4692,
+          "tp": 22453,
+          "seed": 42,
+          "train_seconds": 0.8652039589942433,
+          "ms_por_instancia": 0.0016959208056067437
+        },
+        {
+          "accuracy": 0.8695412894526843,
+          "precision": 0.9987089306384115,
+          "recall": 0.8264137041812488,
+          "f1": 0.9044288104501381,
+          "auc_roc": 0.995255048544335,
+          "auc_pr": 0.998212902855701,
+          "balanced_accuracy": 0.9116300795808375,
+          "fpr": 0.003153545019573728,
+          "tn": 9167,
+          "fp": 29,
+          "fn": 4712,
+          "tp": 22433,
+          "seed": 43,
+          "train_seconds": 0.8400067089824006,
+          "ms_por_instancia": 0.00171065394445544
+        },
+        {
+          "accuracy": 0.8702567348174238,
+          "precision": 0.9987104233368908,
+          "recall": 0.827371523300792,
+          "f1": 0.9050027199645397,
+          "auc_roc": 0.994892461272574,
+          "auc_pr": 0.9980722002175861,
+          "balanced_accuracy": 0.9121089891406091,
+          "fpr": 0.003153545019573728,
+          "tn": 9167,
+          "fp": 29,
+          "fn": 4686,
+          "tp": 22459,
+          "seed": 44,
+          "train_seconds": 0.8490554580348544,
+          "ms_por_instancia": 0.001717903581206362
+        },
+        {
+          "accuracy": 0.8694862551938581,
+          "precision": 0.9987088156723063,
+          "recall": 0.8263400257874378,
+          "f1": 0.9043846386452978,
+          "auc_roc": 0.9948810501750983,
+          "auc_pr": 0.9980546315113349,
+          "balanced_accuracy": 0.911593240383932,
+          "fpr": 0.003153545019573728,
+          "tn": 9167,
+          "fp": 29,
+          "fn": 4714,
+          "tp": 22431,
+          "seed": 45,
+          "train_seconds": 0.8757760419975966,
+          "ms_por_instancia": 0.0017333349396957043
+        },
+        {
+          "accuracy": 0.869871495005641,
+          "precision": 0.9986208737432156,
+          "recall": 0.826929452937926,
+          "f1": 0.9047014489248937,
+          "auc_roc": 0.9953550844301032,
+          "auc_pr": 0.9982275173414894,
+          "balanced_accuracy": 0.9117792110274667,
+          "fpr": 0.0033710308829926054,
+          "tn": 9165,
+          "fp": 31,
+          "fn": 4698,
+          "tp": 22447,
+          "seed": 46,
+          "train_seconds": 0.8457755830022506,
+          "ms_por_instancia": 0.0017324417874181974
+        }
+      ],
+      "resumen": {
+        "accuracy": {
+          "mean": 0.869843977876228,
+          "std": 0.0003313501163642391,
+          "ci95_low": 0.869432552365938,
+          "ci95_high": 0.8702554033865181
+        },
+        "precision": {
+          "mean": 0.9986829403776711,
+          "std": 3.953248052890447e-05,
+          "ci95_low": 0.9986338543198388,
+          "ci95_high": 0.9987320264355035
+        },
+        "recall": {
+          "mean": 0.8268410388653527,
+          "std": 0.0004523877379409445,
+          "ci95_low": 0.8262793252979226,
+          "ci95_high": 0.8274027524327827
+        },
+        "f1": {
+          "mean": 0.9046739435212101,
+          "std": 0.00026663534397990975,
+          "ci95_low": 0.9043428720139416,
+          "ci95_high": 0.9050050150284786
+        },
+        "auc_roc": {
+          "mean": 0.9951797212799882,
+          "std": 0.0002830792722091524,
+          "ci95_low": 0.9948282319390483,
+          "ci95_high": 0.9955312106209281
+        },
+        "auc_pr": {
+          "mean": 0.9981700261390613,
+          "std": 0.00010095196671576189,
+          "ci95_low": 0.9980446777164425,
+          "ci95_high": 0.99829537456168
+        },
+        "balanced_accuracy": {
+          "mean": 0.9118111240433766,
+          "std": 0.00021660740441684353,
+          "ci95_low": 0.9115421704275678,
+          "ci95_high": 0.9120800776591854
+        },
+        "fpr": {
+          "mean": 0.0032187907785993916,
+          "std": 9.726263494996896e-05,
+          "ci95_low": 0.00309802326641158,
+          "ci95_high": 0.003339558290787203
+        },
+        "train_seconds": {
+          "mean": 0.8551635502022691,
+          "std": 0.01483961910361042,
+          "ci95_low": 0.8367377294142592,
+          "ci95_high": 0.873589370990279
+        },
+        "ms_por_instancia": {
+          "mean": 0.0017180510116764896,
+          "std": 1.5693766613295295e-05,
+          "ci95_low": 0.0016985646266765486,
+          "ci95_high": 0.0017375373966764306
+        }
+      },
+      "importancia_variables": [
+        {
+          "variable": "Fwd Packets Length Total",
+          "importancia": 0.3017091077584496
+        },
+        {
+          "variable": "Flow Bytes/s",
+          "importancia": 0.2083153273496925
+        },
+        {
+          "variable": "Flow IAT Mean",
+          "importancia": 0.09089531442524128
+        },
+        {
+          "variable": "Flow IAT Std",
+          "importancia": 0.07894342744274581
+        },
+        {
+          "variable": "Flow IAT Max",
+          "importancia": 0.07524129254914488
+        },
+        {
+          "variable": "Flow Packets/s",
+          "importancia": 0.06990830044499168
+        },
+        {
+          "variable": "Flow Duration",
+          "importancia": 0.04861734117815205
+        },
+        {
+          "variable": "Total Backward Packets",
+          "importancia": 0.03885232895418038
+        },
+        {
+          "variable": "Flow IAT Min",
+          "importancia": 0.038093770687898355
+        },
+        {
+          "variable": "Bwd Packets Length Total",
+          "importancia": 0.025558064342062432
+        },
+        {
+          "variable": "Total Fwd Packets",
+          "importancia": 0.023865724867441162
+        }
+      ],
+      "reporte_multiclase": "              precision    recall  f1-score   support\n\n      Benign     0.6614    0.9967    0.7952      9196\n         DNS     0.0000    0.0000    0.0000      1830\n        LDAP     0.2369    0.9749    0.3811       716\n       MSSQL     0.3909    0.9555    0.5548      3102\n         NTP     0.0000    0.0000    0.0000      5412\n     NetBIOS     0.4819    0.5864    0.5291       295\n     Portmap     0.0000    0.0000    0.0000         0\n        SNMP     0.0000    0.0000    0.0000      1354\n         Syn     0.0000    0.0000    0.0000       262\n        TFTP     0.0000    0.0000    0.0000      4872\n         UDP     0.4280    0.9699    0.5939      5015\n      UDPLag     0.3710    0.0054    0.0106      4258\n     WebDDoS     0.0000    0.0000    0.0000        29\n\n    accuracy                         0.4922     36341\n   macro avg     0.1977    0.3453    0.2204     36341\nweighted avg     0.3118    0.4922    0.3436     36341\n",
+      "reporte_multiclase_dict": {
+        "Benign": {
+          "precision": 0.661423004762592,
+          "recall": 0.9967377120487169,
+          "f1-score": 0.7951765420317516,
+          "support": 9196.0
+        },
+        "DNS": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 1830.0
+        },
+        "LDAP": {
+          "precision": 0.23685103495079743,
+          "recall": 0.9748603351955307,
+          "f1-score": 0.38110838110838113,
+          "support": 716.0
+        },
+        "MSSQL": {
+          "precision": 0.39087432414611634,
+          "recall": 0.9555125725338491,
+          "f1-score": 0.554796443612541,
+          "support": 3102.0
+        },
+        "NTP": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 5412.0
+        },
+        "NetBIOS": {
+          "precision": 0.4818941504178273,
+          "recall": 0.5864406779661017,
+          "f1-score": 0.5290519877675841,
+          "support": 295.0
+        },
+        "Portmap": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 0.0
+        },
+        "SNMP": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 1354.0
+        },
+        "Syn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 262.0
+        },
+        "TFTP": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 4872.0
+        },
+        "UDP": {
+          "precision": 0.42801830341429076,
+          "recall": 0.9698903290129611,
+          "f1-score": 0.5939312534342756,
+          "support": 5015.0
+        },
+        "UDPLag": {
+          "precision": 0.3709677419354839,
+          "recall": 0.005401596993893847,
+          "f1-score": 0.010648148148148148,
+          "support": 4258.0
+        },
+        "WebDDoS": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 29.0
+        },
+        "accuracy": 0.49222641094081065,
+        "macro avg": {
+          "precision": 0.19769450458670057,
+          "recall": 0.3452956325962348,
+          "f1-score": 0.22036251970020626,
+          "support": 36341.0
+        },
+        "weighted avg": {
+          "precision": 0.3118454268589207,
+          "recall": 0.49222641094081065,
+          "f1-score": 0.34358633600238947,
+          "support": 36341.0
+        }
+      }
+    },
+    "rf11_bin": {
+      "nombre": "Compact Random Forest (11 features, binary)",
+      "repeticiones": [
+        {
+          "accuracy": 0.8944442915715033,
+          "precision": 0.9989724707796378,
+          "recall": 0.8595689813962055,
+          "f1": 0.9240426121737753,
+          "auc_roc": 0.9960960065685617,
+          "auc_pr": 0.9985539458104027,
+          "balanced_accuracy": 0.9284795755175894,
+          "fpr": 0.0026098303610265334,
+          "tn": 9172,
+          "fp": 24,
+          "fn": 3812,
+          "tp": 23333,
+          "seed": 42,
+          "train_seconds": 0.8329718330060132,
+          "ms_por_instancia": 0.0018272898646840322
+        },
+        {
+          "accuracy": 0.8946093943479816,
+          "precision": 0.9988873197243977,
+          "recall": 0.8598636949714497,
+          "f1": 0.9241764333227748,
+          "auc_roc": 0.9960745884774074,
+          "auc_pr": 0.9985515145828603,
+          "balanced_accuracy": 0.9285181893735022,
+          "fpr": 0.002827316224445411,
+          "tn": 9170,
+          "fp": 26,
+          "fn": 3804,
+          "tp": 23341,
+          "seed": 43,
+          "train_seconds": 0.8267249169875868,
+          "ms_por_instancia": 0.0013951058307694539
+        },
+        {
+          "accuracy": 0.893866431853829,
+          "precision": 0.9988860325621252,
+          "recall": 0.8588690366550009,
+          "f1": 0.923601069624641,
+          "auc_roc": 0.9956097459946186,
+          "auc_pr": 0.9983640494022434,
+          "balanced_accuracy": 0.9280208602152777,
+          "fpr": 0.002827316224445411,
+          "tn": 9170,
+          "fp": 26,
+          "fn": 3831,
+          "tp": 23314,
+          "seed": 44,
+          "train_seconds": 0.778374666988384,
+          "ms_por_instancia": 0.0014374374959220425
+        },
+        {
+          "accuracy": 0.8941416031479597,
+          "precision": 0.9989292444749015,
+          "recall": 0.8592005894271505,
+          "f1": 0.9238112213574159,
+          "auc_roc": 0.9943717290490686,
+          "auc_pr": 0.9978792679799559,
+          "balanced_accuracy": 0.9282410080672072,
+          "fpr": 0.0027185732927359724,
+          "tn": 9171,
+          "fp": 25,
+          "fn": 3822,
+          "tp": 23323,
+          "seed": 45,
+          "train_seconds": 0.81060837500263,
+          "ms_por_instancia": 0.0018378473082131652
+        },
+        {
+          "accuracy": 0.8959577336892215,
+          "precision": 0.9988896481038606,
+          "recall": 0.8616688156198195,
+          "f1": 0.9252190423448904,
+          "auc_roc": 0.9960977171315326,
+          "auc_pr": 0.998568199184716,
+          "balanced_accuracy": 0.929420749697687,
+          "fpr": 0.002827316224445411,
+          "tn": 9170,
+          "fp": 26,
+          "fn": 3755,
+          "tp": 23390,
+          "seed": 46,
+          "train_seconds": 1.0491144999978133,
+          "ms_por_instancia": 0.00274843268005675
+        }
+      ],
+      "resumen": {
+        "accuracy": {
+          "mean": 0.894603890922099,
+          "std": 0.0008086946800228931,
+          "ci95_low": 0.8935997638523757,
+          "ci95_high": 0.8956080179918223
+        },
+        "precision": {
+          "mean": 0.9989129431289847,
+          "std": 3.7857201223279874e-05,
+          "ci95_low": 0.998865937205153,
+          "ci95_high": 0.9989599490528164
+        },
+        "recall": {
+          "mean": 0.8598342236139251,
+          "std": 0.0010920196851926963,
+          "ci95_low": 0.8584783020854916,
+          "ci95_high": 0.8611901451423587
+        },
+        "f1": {
+          "mean": 0.9241700757646993,
+          "std": 0.00062633113146413,
+          "ci95_low": 0.9233923829478061,
+          "ci95_high": 0.9249477685815926
+        },
+        "auc_roc": {
+          "mean": 0.9956499574442377,
+          "std": 0.0007441849340225354,
+          "ci95_low": 0.9947259298036563,
+          "ci95_high": 0.9965739850848191
+        },
+        "auc_pr": {
+          "mean": 0.9983833953920357,
+          "std": 0.00029411845583414257,
+          "ci95_low": 0.9980181990942192,
+          "ci95_high": 0.9987485916898522
+        },
+        "balanced_accuracy": {
+          "mean": 0.9285360765742527,
+          "std": 0.0005335429169914867,
+          "ci95_low": 0.9278735955427277,
+          "ci95_high": 0.9291985576057777
+        },
+        "fpr": {
+          "mean": 0.0027620704654197476,
+          "std": 9.726263494996898e-05,
+          "ci95_low": 0.002641302953231936,
+          "ci95_high": 0.002882837977607559
+        },
+        "train_seconds": {
+          "mean": 0.8595588583964855,
+          "std": 0.10805473341034975,
+          "ci95_low": 0.7253911860853488,
+          "ci95_high": 0.9937265307076222
+        },
+        "ms_por_instancia": {
+          "mean": 0.0018492226359290889,
+          "std": 0.00054428352497899,
+          "ci95_low": 0.001173405378147238,
+          "ci95_high": 0.00252503989371094
+        }
+      },
+      "importancia_variables": [
+        {
+          "variable": "Fwd Packets Length Total",
+          "importancia": 0.23990380442898154
+        },
+        {
+          "variable": "Bwd Packets Length Total",
+          "importancia": 0.1572421862084579
+        },
+        {
+          "variable": "Total Backward Packets",
+          "importancia": 0.12439001111807382
+        },
+        {
+          "variable": "Flow IAT Mean",
+          "importancia": 0.08107766554903595
+        },
+        {
+          "variable": "Flow Bytes/s",
+          "importancia": 0.08089141909217845
+        },
+        {
+          "variable": "Flow IAT Std",
+          "importancia": 0.0744074672927601
+        },
+        {
+          "variable": "Total Fwd Packets",
+          "importancia": 0.07251107654302763
+        },
+        {
+          "variable": "Flow IAT Max",
+          "importancia": 0.06985456536955101
+        },
+        {
+          "variable": "Flow Packets/s",
+          "importancia": 0.044121702796890365
+        },
+        {
+          "variable": "Flow Duration",
+          "importancia": 0.04363942090131532
+        },
+        {
+          "variable": "Flow IAT Min",
+          "importancia": 0.011960680699728048
+        }
+      ],
+      "mcnemar_vs_referencia": {
+        "solo_acierta_referencia": 54,
+        "solo_acierta_otro": 940,
+        "p_value": 9.154607845178408e-210
+      }
+    },
+    "rf77": {
+      "nombre": "Random Forest (77 features)",
+      "repeticiones": [
+        {
+          "accuracy": 0.887867697641782,
+          "precision": 0.9999133223541649,
+          "recall": 0.8499539510038682,
+          "f1": 0.9188554132897907,
+          "auc_roc": 0.998107566529082,
+          "auc_pr": 0.9993537442635216,
+          "balanced_accuracy": 0.9248682325702247,
+          "fpr": 0.00021748586341887777,
+          "tn": 9194,
+          "fp": 2,
+          "fn": 4073,
+          "tp": 23072,
+          "seed": 42,
+          "train_seconds": 0.936733832990285,
+          "ms_por_instancia": 0.0017014425857197263
+        },
+        {
+          "accuracy": 0.8899589994771745,
+          "precision": 0.9999567997235183,
+          "recall": 0.8527168907717811,
+          "f1": 0.9204859523194082,
+          "auc_roc": 0.9980939761663696,
+          "auc_pr": 0.9993534299352017,
+          "balanced_accuracy": 0.9263040739200359,
+          "fpr": 0.00010874293170943889,
+          "tn": 9195,
+          "fp": 1,
+          "fn": 3998,
+          "tp": 23147,
+          "seed": 43,
+          "train_seconds": 0.9046462079859339,
+          "ms_por_instancia": 0.0017578274952185977
+        },
+        {
+          "accuracy": 0.8915825101125451,
+          "precision": 0.9999138265328106,
+          "recall": 0.8549272425861116,
+          "f1": 0.9217539818087938,
+          "auc_roc": 0.9984653506041171,
+          "auc_pr": 0.9994843695995554,
+          "balanced_accuracy": 0.9273548783613463,
+          "fpr": 0.00021748586341887777,
+          "tn": 9194,
+          "fp": 2,
+          "fn": 3938,
+          "tp": 23207,
+          "seed": 44,
+          "train_seconds": 0.8913680409896187,
+          "ms_por_instancia": 0.0017742632285707865
+        },
+        {
+          "accuracy": 0.8922979554772846,
+          "precision": 0.9999569577755778,
+          "recall": 0.8558482225087493,
+          "f1": 0.9223073563857239,
+          "auc_roc": 0.9987708443314787,
+          "auc_pr": 0.9995899948822211,
+          "balanced_accuracy": 0.9278697397885198,
+          "fpr": 0.00010874293170943889,
+          "tn": 9195,
+          "fp": 1,
+          "fn": 3913,
+          "tp": 23232,
+          "seed": 45,
+          "train_seconds": 0.9270813339971937,
+          "ms_por_instancia": 0.001371738064895456
+        },
+        {
+          "accuracy": 0.8968657989598525,
+          "precision": 0.999957263130903,
+          "recall": 0.8619635291950636,
+          "f1": 0.925846786957898,
+          "auc_roc": 0.9984578253288466,
+          "auc_pr": 0.9994800187442195,
+          "balanced_accuracy": 0.930927393131677,
+          "fpr": 0.00010874293170943889,
+          "tn": 9195,
+          "fp": 1,
+          "fn": 3747,
+          "tp": 23398,
+          "seed": 46,
+          "train_seconds": 0.9007047080085613,
+          "ms_por_instancia": 0.0014464711483876199
+        }
+      ],
+      "resumen": {
+        "accuracy": {
+          "mean": 0.8917145923337276,
+          "std": 0.003345646164209027,
+          "ci95_low": 0.8875604239409007,
+          "ci95_high": 0.8958687607265545
+        },
+        "precision": {
+          "mean": 0.9999396339033948,
+          "std": 2.3790174388875723e-05,
+          "ci95_low": 0.9999100945003452,
+          "ci95_high": 0.9999691733064444
+        },
+        "recall": {
+          "mean": 0.8550819672131148,
+          "std": 0.004468140525300755,
+          "ci95_low": 0.8495340379839336,
+          "ci95_high": 0.860629896442296
+        },
+        "f1": {
+          "mean": 0.9218498981523229,
+          "std": 0.0025990804110037585,
+          "ci95_low": 0.9186227135775429,
+          "ci95_high": 0.9250770827271029
+        },
+        "auc_roc": {
+          "mean": 0.9983791125919786,
+          "std": 0.00028378094144002194,
+          "ci95_low": 0.9980267520136162,
+          "ci95_high": 0.998731473170341
+        },
+        "auc_pr": {
+          "mean": 0.999452311484944,
+          "std": 0.00010030602029929688,
+          "ci95_low": 0.9993277651107352,
+          "ci95_high": 0.9995768578591527
+        },
+        "balanced_accuracy": {
+          "mean": 0.9274648635543608,
+          "std": 0.002250280961590745,
+          "ci95_low": 0.9246707706985102,
+          "ci95_high": 0.9302589564102113
+        },
+        "fpr": {
+          "mean": 0.00015224010439321444,
+          "std": 5.9560956666503495e-05,
+          "ci95_low": 7.828540880184258e-05,
+          "ci95_high": 0.00022619479998458632
+        },
+        "train_seconds": {
+          "mean": 0.9121068247943185,
+          "std": 0.01901638558327312,
+          "ci95_low": 0.8884948634396072,
+          "ci95_high": 0.9357187861490298
+        },
+        "ms_por_instancia": {
+          "mean": 0.0016103485045584373,
+          "std": 0.0001875546259350206,
+          "ci95_low": 0.0013774686778383481,
+          "ci95_high": 0.0018432283312785265
+        }
+      },
+      "importancia_variables": [
+        {
+          "variable": "Fwd Packet Length Min",
+          "importancia": 0.09335725824385936
+        },
+        {
+          "variable": "Packet Length Min",
+          "importancia": 0.07819608344763997
+        },
+        {
+          "variable": "URG Flag Count",
+          "importancia": 0.05432232709008011
+        },
+        {
+          "variable": "Bwd Packets/s",
+          "importancia": 0.05204504274213661
+        },
+        {
+          "variable": "Avg Packet Size",
+          "importancia": 0.04644955591462953
+        },
+        {
+          "variable": "Fwd Packet Length Mean",
+          "importancia": 0.0411631506209111
+        },
+        {
+          "variable": "Avg Fwd Segment Size",
+          "importancia": 0.040916785023326505
+        },
+        {
+          "variable": "Init Fwd Win Bytes",
+          "importancia": 0.03333003070293852
+        },
+        {
+          "variable": "ACK Flag Count",
+          "importancia": 0.03033262092780662
+        },
+        {
+          "variable": "Packet Length Mean",
+          "importancia": 0.027372817288043097
+        },
+        {
+          "variable": "Flow IAT Mean",
+          "importancia": 0.024612916936438772
+        },
+        {
+          "variable": "Init Bwd Win Bytes",
+          "importancia": 0.024180838002154627
+        },
+        {
+          "variable": "Bwd Packet Length Mean",
+          "importancia": 0.024019222906161042
+        },
+        {
+          "variable": "Bwd Packets Length Total",
+          "importancia": 0.02386447652217945
+        },
+        {
+          "variable": "Down/Up Ratio",
+          "importancia": 0.021557066209661024
+        },
+        {
+          "variable": "Fwd Act Data Packets",
+          "importancia": 0.020959194261181962
+        },
+        {
+          "variable": "Bwd Packet Length Max",
+          "importancia": 0.019798292052613728
+        },
+        {
+          "variable": "Fwd Packets Length Total",
+          "importancia": 0.019046576071312236
+        },
+        {
+          "variable": "Subflow Bwd Bytes",
+          "importancia": 0.017901846719449162
+        },
+        {
+          "variable": "Idle Std",
+          "importancia": 0.016340718962230213
+        },
+        {
+          "variable": "Packet Length Max",
+          "importancia": 0.01612995377408558
+        },
+        {
+          "variable": "Avg Bwd Segment Size",
+          "importancia": 0.016075509820316063
+        },
+        {
+          "variable": "Fwd Packet Length Max",
+          "importancia": 0.015576729660645739
+        },
+        {
+          "variable": "Packet Length Std",
+          "importancia": 0.015085126294834559
+        },
+        {
+          "variable": "Idle Max",
+          "importancia": 0.014228356750250862
+        },
+        {
+          "variable": "Packet Length Variance",
+          "importancia": 0.014221733031708676
+        },
+        {
+          "variable": "Fwd IAT Mean",
+          "importancia": 0.013669771913643016
+        },
+        {
+          "variable": "Subflow Fwd Bytes",
+          "importancia": 0.013541300999709066
+        },
+        {
+          "variable": "Fwd IAT Max",
+          "importancia": 0.013506316869884523
+        },
+        {
+          "variable": "Fwd IAT Std",
+          "importancia": 0.013291653316986908
+        },
+        {
+          "variable": "Protocol",
+          "importancia": 0.011594197909442872
+        },
+        {
+          "variable": "Subflow Bwd Packets",
+          "importancia": 0.010636223830901601
+        },
+        {
+          "variable": "Flow IAT Max",
+          "importancia": 0.010526950197079842
+        },
+        {
+          "variable": "Flow IAT Std",
+          "importancia": 0.01033279806767522
+        },
+        {
+          "variable": "Fwd Packets/s",
+          "importancia": 0.00781913944888784
+        },
+        {
+          "variable": "Bwd IAT Min",
+          "importancia": 0.007559677893164348
+        },
+        {
+          "variable": "Active Min",
+          "importancia": 0.007110479546299305
+        },
+        {
+          "variable": "Fwd Packet Length Std",
+          "importancia": 0.0061028725105447944
+        },
+        {
+          "variable": "Flow Packets/s",
+          "importancia": 0.006025018996212941
+        },
+        {
+          "variable": "Bwd Header Length",
+          "importancia": 0.006002525723694909
+        },
+        {
+          "variable": "Flow Bytes/s",
+          "importancia": 0.005780550246393644
+        },
+        {
+          "variable": "Idle Mean",
+          "importancia": 0.005204679117828542
+        },
+        {
+          "variable": "Flow Duration",
+          "importancia": 0.00518393215073618
+        },
+        {
+          "variable": "Total Backward Packets",
+          "importancia": 0.0049982697274794236
+        },
+        {
+          "variable": "Total Fwd Packets",
+          "importancia": 0.004510788726749902
+        },
+        {
+          "variable": "Fwd IAT Total",
+          "importancia": 0.004099982593452108
+        },
+        {
+          "variable": "Bwd Packet Length Min",
+          "importancia": 0.0035929021683380235
+        },
+        {
+          "variable": "Fwd PSH Flags",
+          "importancia": 0.0035593627409186497
+        },
+        {
+          "variable": "Subflow Fwd Packets",
+          "importancia": 0.0034182803186573636
+        },
+        {
+          "variable": "Fwd IAT Min",
+          "importancia": 0.0031610131904090152
+        },
+        {
+          "variable": "Bwd IAT Mean",
+          "importancia": 0.002834492229003389
+        },
+        {
+          "variable": "Active Mean",
+          "importancia": 0.0024801526211950353
+        },
+        {
+          "variable": "Idle Min",
+          "importancia": 0.0022651831111597078
+        },
+        {
+          "variable": "CWE Flag Count",
+          "importancia": 0.001734808747700262
+        },
+        {
+          "variable": "RST Flag Count",
+          "importancia": 0.001706843927064823
+        },
+        {
+          "variable": "Flow IAT Min",
+          "importancia": 0.0016523367293130946
+        },
+        {
+          "variable": "Active Max",
+          "importancia": 0.001323929986080198
+        },
+        {
+          "variable": "Bwd Packet Length Std",
+          "importancia": 0.0012707895853191356
+        },
+        {
+          "variable": "Bwd IAT Total",
+          "importancia": 0.0008417323539319723
+        },
+        {
+          "variable": "Active Std",
+          "importancia": 0.0005776675518315637
+        },
+        {
+          "variable": "Bwd IAT Max",
+          "importancia": 0.0005581429638102273
+        },
+        {
+          "variable": "Bwd IAT Std",
+          "importancia": 0.00019473693717874668
+        },
+        {
+          "variable": "Fwd Header Length",
+          "importancia": 0.00011006592021466494
+        },
+        {
+          "variable": "SYN Flag Count",
+          "importancia": 0.00010372828269297007
+        },
+        {
+          "variable": "Fwd Seg Size Min",
+          "importancia": 3.247087181902237e-05
+        },
+        {
+          "variable": "Bwd PSH Flags",
+          "importancia": 0.0
+        },
+        {
+          "variable": "Fwd URG Flags",
+          "importancia": 0.0
+        },
+        {
+          "variable": "Bwd URG Flags",
+          "importancia": 0.0
+        },
+        {
+          "variable": "FIN Flag Count",
+          "importancia": 0.0
+        },
+        {
+          "variable": "PSH Flag Count",
+          "importancia": 0.0
+        },
+        {
+          "variable": "ECE Flag Count",
+          "importancia": 0.0
+        },
+        {
+          "variable": "Fwd Avg Bytes/Bulk",
+          "importancia": 0.0
+        },
+        {
+          "variable": "Fwd Avg Packets/Bulk",
+          "importancia": 0.0
+        },
+        {
+          "variable": "Fwd Avg Bulk Rate",
+          "importancia": 0.0
+        },
+        {
+          "variable": "Bwd Avg Bytes/Bulk",
+          "importancia": 0.0
+        },
+        {
+          "variable": "Bwd Avg Packets/Bulk",
+          "importancia": 0.0
+        },
+        {
+          "variable": "Bwd Avg Bulk Rate",
+          "importancia": 0.0
+        }
+      ],
+      "mcnemar_vs_referencia": {
+        "solo_acierta_referencia": 443,
+        "solo_acierta_otro": 1090,
+        "p_value": 4.8275112083044284e-63
+      }
+    },
+    "xgb77": {
+      "nombre": "XGBoost (77 features)",
+      "repeticiones": [
+        {
+          "accuracy": 0.9029470845601387,
+          "precision": 0.9998730104977989,
+          "recall": 0.8701786701049917,
+          "f1": 0.9305284720991156,
+          "auc_roc": 0.9995102802430939,
+          "auc_pr": 0.999834310021338,
+          "balanced_accuracy": 0.9349262206549317,
+          "fpr": 0.00032622879512831667,
+          "tn": 9193,
+          "fp": 3,
+          "fn": 3524,
+          "tp": 23621,
+          "seed": 42,
+          "train_seconds": 0.8307699169963598,
+          "ms_por_instancia": 0.00036777790980973
+        },
+        {
+          "accuracy": 0.8970309017363308,
+          "precision": 0.9998718441625016,
+          "recall": 0.8622582427703076,
+          "f1": 0.9259801400482652,
+          "auc_roc": 0.9995171104769699,
+          "auc_pr": 0.9998380046437974,
+          "balanced_accuracy": 0.9309660069875896,
+          "fpr": 0.00032622879512831667,
+          "tn": 9193,
+          "fp": 3,
+          "fn": 3739,
+          "tp": 23406,
+          "seed": 43,
+          "train_seconds": 0.7778227920061909,
+          "ms_por_instancia": 0.0003126863056308889
+        },
+        {
+          "accuracy": 0.8975262100657659,
+          "precision": 0.9998719426302983,
+          "recall": 0.8629213483146068,
+          "f1": 0.9263624139840227,
+          "auc_roc": 0.999036832867422,
+          "auc_pr": 0.9996706988272421,
+          "balanced_accuracy": 0.9312975597597393,
+          "fpr": 0.00032622879512831667,
+          "tn": 9193,
+          "fp": 3,
+          "fn": 3721,
+          "tp": 23424,
+          "seed": 44,
+          "train_seconds": 0.8298777920426801,
+          "ms_por_instancia": 0.00032631187959570603
+        },
+        {
+          "accuracy": 0.8978288984893096,
+          "precision": 0.9998720027306084,
+          "recall": 0.8633265794805673,
+          "f1": 0.9265958919004409,
+          "auc_roc": 0.99963070067143,
+          "auc_pr": 0.9998762328915525,
+          "balanced_accuracy": 0.9315001753427194,
+          "fpr": 0.00032622879512831667,
+          "tn": 9193,
+          "fp": 3,
+          "fn": 3710,
+          "tp": 23435,
+          "seed": 45,
+          "train_seconds": 0.740566874970682,
+          "ms_por_instancia": 0.00032446479183373606
+        },
+        {
+          "accuracy": 0.9038826669601827,
+          "precision": 0.9998731930002536,
+          "recall": 0.8714312027997789,
+          "f1": 0.93124421786115,
+          "auc_roc": 0.9994627309991106,
+          "auc_pr": 0.9998183970350392,
+          "balanced_accuracy": 0.9355524870023253,
+          "fpr": 0.00032622879512831667,
+          "tn": 9193,
+          "fp": 3,
+          "fn": 3490,
+          "tp": 23655,
+          "seed": 46,
+          "train_seconds": 0.7348483339883387,
+          "ms_por_instancia": 0.00032224850723469844
+        }
+      ],
+      "resumen": {
+        "accuracy": {
+          "mean": 0.8998431523623456,
+          "std": 0.0032896149899675547,
+          "ci95_low": 0.8957585558613514,
+          "ci95_high": 0.9039277488633397
+        },
+        "precision": {
+          "mean": 0.9998723986042922,
+          "std": 6.475941172304492e-07,
+          "ci95_low": 0.9998715945099914,
+          "ci95_high": 0.999873202698593
+        },
+        "recall": {
+          "mean": 0.8660232086940505,
+          "std": 0.004404048566970335,
+          "ci95_low": 0.8605548601421025,
+          "ci95_high": 0.8714915572459985
+        },
+        "f1": {
+          "mean": 0.9281422271785988,
+          "std": 0.0025273513593554444,
+          "ci95_low": 0.9250041059848758,
+          "ci95_high": 0.9312803483723219
+        },
+        "auc_roc": {
+          "mean": 0.9994315310516052,
+          "std": 0.00022910363593192938,
+          "ci95_low": 0.999147061315011,
+          "ci95_high": 0.9997160007881994
+        },
+        "auc_pr": {
+          "mean": 0.9998075286837939,
+          "std": 7.938328389101597e-05,
+          "ci95_low": 0.9997089613181271,
+          "ci95_high": 0.9999060960494606
+        },
+        "balanced_accuracy": {
+          "mean": 0.932848489949461,
+          "std": 0.0022020242834851784,
+          "ci95_low": 0.930114315673487,
+          "ci95_high": 0.935582664225435
+        },
+        "fpr": {
+          "mean": 0.00032622879512831667,
+          "std": 0.0,
+          "ci95_low": 0.00032622879512831667,
+          "ci95_high": 0.00032622879512831667
+        },
+        "train_seconds": {
+          "mean": 0.7827771420008502,
+          "std": 0.046435978912531865,
+          "ci95_low": 0.7251192587638102,
+          "ci95_high": 0.8404350252378903
+        },
+        "ms_por_instancia": {
+          "mean": 0.0003306978788209519,
+          "std": 2.1382385915201243e-05,
+          "ci95_low": 0.00030414814003434725,
+          "ci95_high": 0.00035724761760755656
+        }
+      },
+      "importancia_variables": [
+        {
+          "variable": "Bwd Packets/s",
+          "importancia": 0.3173704743385315
+        },
+        {
+          "variable": "URG Flag Count",
+          "importancia": 0.19149094820022583
+        },
+        {
+          "variable": "Idle Std",
+          "importancia": 0.15222395956516266
+        },
+        {
+          "variable": "Packet Length Min",
+          "importancia": 0.06482106447219849
+        },
+        {
+          "variable": "Fwd Packet Length Min",
+          "importancia": 0.06384184211492538
+        },
+        {
+          "variable": "ACK Flag Count",
+          "importancia": 0.0535801537334919
+        },
+        {
+          "variable": "Fwd Packets/s",
+          "importancia": 0.04812987521290779
+        },
+        {
+          "variable": "Flow IAT Mean",
+          "importancia": 0.022266080603003502
+        },
+        {
+          "variable": "SYN Flag Count",
+          "importancia": 0.008340353146195412
+        },
+        {
+          "variable": "Active Min",
+          "importancia": 0.006850262638181448
+        },
+        {
+          "variable": "Fwd Packet Length Max",
+          "importancia": 0.006124900188297033
+        },
+        {
+          "variable": "Bwd Packets Length Total",
+          "importancia": 0.005329666659235954
+        },
+        {
+          "variable": "Fwd Packet Length Mean",
+          "importancia": 0.004670091904699802
+        },
+        {
+          "variable": "Avg Packet Size",
+          "importancia": 0.003607824444770813
+        },
+        {
+          "variable": "Fwd Packet Length Std",
+          "importancia": 0.003498058533295989
+        },
+        {
+          "variable": "Bwd Packet Length Max",
+          "importancia": 0.0032776084262877703
+        },
+        {
+          "variable": "Init Bwd Win Bytes",
+          "importancia": 0.0031183771789073944
+        },
+        {
+          "variable": "Subflow Bwd Bytes",
+          "importancia": 0.002835505176335573
+        },
+        {
+          "variable": "Flow IAT Min",
+          "importancia": 0.0027385076973587275
+        },
+        {
+          "variable": "Protocol",
+          "importancia": 0.0025742817670106888
+        },
+        {
+          "variable": "Fwd Act Data Packets",
+          "importancia": 0.0023566903546452522
+        },
+        {
+          "variable": "Packet Length Std",
+          "importancia": 0.0022339799907058477
+        },
+        {
+          "variable": "Bwd Packet Length Min",
+          "importancia": 0.002090196590870619
+        },
+        {
+          "variable": "Fwd IAT Std",
+          "importancia": 0.0018290579319000244
+        },
+        {
+          "variable": "Init Fwd Win Bytes",
+          "importancia": 0.0018114392878487706
+        },
+        {
+          "variable": "Packet Length Mean",
+          "importancia": 0.0017937237862497568
+        },
+        {
+          "variable": "Fwd IAT Min",
+          "importancia": 0.001729283481836319
+        },
+        {
+          "variable": "Total Backward Packets",
+          "importancia": 0.001588484738022089
+        },
+        {
+          "variable": "Idle Mean",
+          "importancia": 0.0011418674839660525
+        },
+        {
+          "variable": "Packet Length Max",
+          "importancia": 0.001027998048812151
+        },
+        {
+          "variable": "Subflow Fwd Packets",
+          "importancia": 0.0010078521445393562
+        },
+        {
+          "variable": "Flow IAT Std",
+          "importancia": 0.000985330669209361
+        },
+        {
+          "variable": "Fwd Packets Length Total",
+          "importancia": 0.000925712171010673
+        },
+        {
+          "variable": "Flow Duration",
+          "importancia": 0.0009069088846445084
+        },
+        {
+          "variable": "Bwd IAT Mean",
+          "importancia": 0.0008154174429364502
+        },
+        {
+          "variable": "Idle Max",
+          "importancia": 0.0007244031876325607
+        },
+        {
+          "variable": "Fwd IAT Mean",
+          "importancia": 0.0006952022667974234
+        },
+        {
+          "variable": "CWE Flag Count",
+          "importancia": 0.0006312409532256424
+        },
+        {
+          "variable": "Total Fwd Packets",
+          "importancia": 0.0006303718546405435
+        },
+        {
+          "variable": "Bwd IAT Std",
+          "importancia": 0.0006288601434789598
+        },
+        {
+          "variable": "Bwd Packet Length Mean",
+          "importancia": 0.0005761489155702293
+        },
+        {
+          "variable": "Fwd Seg Size Min",
+          "importancia": 0.0004782924661412835
+        },
+        {
+          "variable": "Bwd Header Length",
+          "importancia": 0.00045290941488929093
+        },
+        {
+          "variable": "Packet Length Variance",
+          "importancia": 0.00045242701889947057
+        },
+        {
+          "variable": "Active Max",
+          "importancia": 0.00043300914694555104
+        },
+        {
+          "variable": "Flow Bytes/s",
+          "importancia": 0.00041033682646229863
+        },
+        {
+          "variable": "Flow IAT Max",
+          "importancia": 0.0004012566932942718
+        },
+        {
+          "variable": "Fwd PSH Flags",
+          "importancia": 0.0003990904369857162
+        },
+        {
+          "variable": "Active Mean",
+          "importancia": 0.00039672176353633404
+        },
+        {
+          "variable": "Bwd IAT Max",
+          "importancia": 0.00039183610351756215
+        },
+        {
+          "variable": "RST Flag Count",
+          "importancia": 0.00037742231506854296
+        },
+        {
+          "variable": "Fwd IAT Total",
+          "importancia": 0.00035811218549497426
+        },
+        {
+          "variable": "Bwd Packet Length Std",
+          "importancia": 0.00035371098783798516
+        },
+        {
+          "variable": "Fwd IAT Max",
+          "importancia": 0.00032503006514161825
+        },
+        {
+          "variable": "Fwd Header Length",
+          "importancia": 0.0003071845567319542
+        },
+        {
+          "variable": "Flow Packets/s",
+          "importancia": 0.00029666346381418407
+        },
+        {
+          "variable": "Avg Fwd Segment Size",
+          "importancia": 0.0002601351880002767
+        },
+        {
+          "variable": "Idle Min",
+          "importancia": 0.00021210646082181484
+        },
+        {
+          "variable": "Avg Bwd Segment Size",
+          "importancia": 0.00019405438797548413
+        },
+        {
+          "variable": "Bwd IAT Total",
+          "importancia": 0.00018895865650847554
+        },
+        {
+          "variable": "Down/Up Ratio",
+          "importancia": 0.0001724261965136975
+        },
+        {
+          "variable": "Subflow Fwd Bytes",
+          "importancia": 0.00013495230814442039
+        },
+        {
+          "variable": "Bwd IAT Min",
+          "importancia": 0.00011640627053566277
+        },
+        {
+          "variable": "Subflow Bwd Packets",
+          "importancia": 6.693323666695505e-05
+        },
+        {
+          "variable": "Bwd PSH Flags",
+          "importancia": 0.0
+        },
+        {
+          "variable": "Fwd URG Flags",
+          "importancia": 0.0
+        },
+        {
+          "variable": "Bwd URG Flags",
+          "importancia": 0.0
+        },
+        {
+          "variable": "FIN Flag Count",
+          "importancia": 0.0
+        },
+        {
+          "variable": "PSH Flag Count",
+          "importancia": 0.0
+        },
+        {
+          "variable": "ECE Flag Count",
+          "importancia": 0.0
+        },
+        {
+          "variable": "Fwd Avg Bytes/Bulk",
+          "importancia": 0.0
+        },
+        {
+          "variable": "Fwd Avg Packets/Bulk",
+          "importancia": 0.0
+        },
+        {
+          "variable": "Fwd Avg Bulk Rate",
+          "importancia": 0.0
+        },
+        {
+          "variable": "Bwd Avg Bytes/Bulk",
+          "importancia": 0.0
+        },
+        {
+          "variable": "Bwd Avg Packets/Bulk",
+          "importancia": 0.0
+        },
+        {
+          "variable": "Bwd Avg Bulk Rate",
+          "importancia": 0.0
+        },
+        {
+          "variable": "Active Std",
+          "importancia": 0.0
+        }
+      ],
+      "mcnemar_vs_referencia": {
+        "solo_acierta_referencia": 376,
+        "solo_acierta_otro": 1571,
+        "p_value": 4.037480433874391e-173
+      }
+    },
+    "mlp77": {
+      "nombre": "MLP (77 features)",
+      "repeticiones": [
+        {
+          "accuracy": 0.9928455463526045,
+          "precision": 0.9989977356249304,
+          "recall": 0.9914164671210167,
+          "f1": 0.9951926632645515,
+          "auc_roc": 0.9989831944999832,
+          "auc_pr": 0.9997018123459407,
+          "balanced_accuracy": 0.994240203982431,
+          "fpr": 0.00293605915615485,
+          "tn": 9169,
+          "fp": 27,
+          "fn": 233,
+          "tp": 26912,
+          "seed": 42,
+          "train_seconds": 0.9278853339492343,
+          "ms_por_instancia": 0.00010935651093423293
+        },
+        {
+          "accuracy": 0.9930106491290829,
+          "precision": 0.9991090983332714,
+          "recall": 0.9915269847117333,
+          "f1": 0.9953036018046002,
+          "auc_roc": 0.9991853213506863,
+          "auc_pr": 0.9997630671087034,
+          "balanced_accuracy": 0.9944585771753534,
+          "fpr": 0.0026098303610265334,
+          "tn": 9172,
+          "fp": 24,
+          "fn": 230,
+          "tp": 26915,
+          "seed": 43,
+          "train_seconds": 0.9178322910447605,
+          "ms_por_instancia": 8.564937682637573e-05
+        },
+        {
+          "accuracy": 0.9913045871054732,
+          "precision": 0.9988843021309829,
+          "recall": 0.9894639896850249,
+          "f1": 0.9941518303290521,
+          "auc_roc": 0.99942339806579,
+          "auc_pr": 0.9998157733916492,
+          "balanced_accuracy": 0.9931008508668708,
+          "fpr": 0.0032622879512831664,
+          "tn": 9166,
+          "fp": 30,
+          "fn": 286,
+          "tp": 26859,
+          "seed": 44,
+          "train_seconds": 0.5878645420307294,
+          "ms_por_instancia": 8.423337268506154e-05
+        },
+        {
+          "accuracy": 0.9922952037643433,
+          "precision": 0.9990340676895643,
+          "recall": 0.9906428439860011,
+          "f1": 0.9948207613480818,
+          "auc_roc": 0.9981595924806056,
+          "auc_pr": 0.9993314151014954,
+          "balanced_accuracy": 0.9939077638807778,
+          "fpr": 0.002827316224445411,
+          "tn": 9170,
+          "fp": 26,
+          "fn": 254,
+          "tp": 26891,
+          "seed": 45,
+          "train_seconds": 0.7738068749895319,
+          "ms_por_instancia": 8.377014919693133e-05
+        },
+        {
+          "accuracy": 0.9921025838584518,
+          "precision": 0.9991822169355439,
+          "recall": 0.9902376128200405,
+          "f1": 0.9946898070198161,
+          "auc_roc": 0.9989136282675058,
+          "auc_pr": 0.9996720208050931,
+          "balanced_accuracy": 0.9939226341612164,
+          "fpr": 0.0023923444976076554,
+          "tn": 9174,
+          "fp": 22,
+          "fn": 265,
+          "tp": 26880,
+          "seed": 46,
+          "train_seconds": 0.7858046249602921,
+          "ms_por_instancia": 8.277152446486495e-05
+        }
+      ],
+      "resumen": {
+        "accuracy": {
+          "mean": 0.9923117140419911,
+          "std": 0.0006767200087587734,
+          "ci95_low": 0.9914714551702513,
+          "ci95_high": 0.993151972913731
+        },
+        "precision": {
+          "mean": 0.9990414841428585,
+          "std": 0.0001129740226112328,
+          "ci95_low": 0.99890120836625,
+          "ci95_high": 0.9991817599194671
+        },
+        "recall": {
+          "mean": 0.9906575796647633,
+          "std": 0.0008563033395915453,
+          "ci95_low": 0.9895943386364509,
+          "ci95_high": 0.9917208206930758
+        },
+        "f1": {
+          "mean": 0.9948317327532203,
+          "std": 0.0004570180050016621,
+          "ci95_low": 0.9942642699498788,
+          "ci95_high": 0.9953991955565619
+        },
+        "auc_roc": {
+          "mean": 0.9989330269329141,
+          "std": 0.0004757126932876478,
+          "ci95_low": 0.9983423516081703,
+          "ci95_high": 0.9995237022576579
+        },
+        "auc_pr": {
+          "mean": 0.9996568177505762,
+          "std": 0.00019019618321541846,
+          "ci95_low": 0.9994206579972819,
+          "ci95_high": 0.9998929775038706
+        },
+        "balanced_accuracy": {
+          "mean": 0.99392600601333,
+          "std": 0.0005156494853388416,
+          "ci95_low": 0.9932857426116924,
+          "ci95_high": 0.9945662694149676
+        },
+        "fpr": {
+          "mean": 0.002805567638103523,
+          "std": 0.00032983364262947147,
+          "ci95_low": 0.002396025078654102,
+          "ci95_high": 0.003215110197552944
+        },
+        "train_seconds": {
+          "mean": 0.7986387333949097,
+          "std": 0.13794825408144698,
+          "ci95_low": 0.6273533526869115,
+          "ci95_high": 0.9699241141029078
+        },
+        "ms_por_instancia": {
+          "mean": 8.91561868214933e-05,
+          "std": 1.1339733510148982e-05,
+          "ci95_low": 7.507604797271652e-05,
+          "ci95_high": 0.00010323632567027009
+        }
+      },
+      "mcnemar_vs_referencia": {
+        "solo_acierta_referencia": 68,
+        "solo_acierta_otro": 4530,
+        "p_value": 0.0
+      }
+    },
+    "iforest77": {
+      "nombre": "Isolation Forest (77 features)",
+      "repeticiones": [
+        {
+          "accuracy": 0.2807572714014474,
+          "precision": 0.7960023515579071,
+          "recall": 0.0498802726100571,
+          "f1": 0.09387783401511475,
+          "auc_roc": 0.8954612014273226,
+          "auc_pr": 0.9111000241618159,
+          "balanced_accuracy": 0.5060732376534409,
+          "fpr": 0.0377337973031753,
+          "tn": 8849,
+          "fp": 347,
+          "fn": 25791,
+          "tp": 1354,
+          "seed": 42,
+          "train_seconds": 0.1855137919774279,
+          "ms_por_instancia": 0.001800419388225702,
+          "umbral_anomalia": 0.5559475896782167
+        },
+        {
+          "accuracy": 0.31603423130898983,
+          "precision": 0.8834170854271357,
+          "recall": 0.09714496223982318,
+          "f1": 0.1750414868901427,
+          "auc_roc": 0.8992244519808921,
+          "auc_pr": 0.918739682418759,
+          "balanced_accuracy": 0.5296512110024693,
+          "fpr": 0.03784254023488473,
+          "tn": 8848,
+          "fp": 348,
+          "fn": 24508,
+          "tp": 2637,
+          "seed": 43,
+          "train_seconds": 0.18117287498898804,
+          "ms_por_instancia": 0.001770245727517693,
+          "umbral_anomalia": 0.5577618373447704
+        },
+        {
+          "accuracy": 0.3529897361107289,
+          "precision": 0.9231127679403541,
+          "recall": 0.14595689813962057,
+          "f1": 0.2520596749053663,
+          "auc_roc": 0.9046864077384427,
+          "auc_pr": 0.9274480479722081,
+          "balanced_accuracy": 0.5550358653377528,
+          "fpr": 0.03588516746411483,
+          "tn": 8866,
+          "fp": 330,
+          "fn": 23183,
+          "tp": 3962,
+          "seed": 44,
+          "train_seconds": 0.18231045798165724,
+          "ms_por_instancia": 0.0018124306442073089,
+          "umbral_anomalia": 0.5570870119829481
+        },
+        {
+          "accuracy": 0.3241793016152555,
+          "precision": 0.8889557628648811,
+          "recall": 0.10882298765886904,
+          "f1": 0.193908362872522,
+          "auc_roc": 0.9038309900490102,
+          "auc_pr": 0.9203253374032222,
+          "balanced_accuracy": 0.534348422929043,
+          "fpr": 0.04012614180078295,
+          "tn": 8827,
+          "fp": 369,
+          "fn": 24191,
+          "tp": 2954,
+          "seed": 45,
+          "train_seconds": 0.18100187496747822,
+          "ms_por_instancia": 0.001773402163304399,
+          "umbral_anomalia": 0.5561258127506786
+        },
+        {
+          "accuracy": 0.351641396769489,
+          "precision": 0.9326249698140546,
+          "recall": 0.1422729784490698,
+          "f1": 0.24688359010419997,
+          "auc_roc": 0.9087708695692931,
+          "auc_pr": 0.927839134095965,
+          "balanced_accuracy": 0.5559668502510682,
+          "fpr": 0.03033927794693345,
+          "tn": 8917,
+          "fp": 279,
+          "fn": 23283,
+          "tp": 3862,
+          "seed": 46,
+          "train_seconds": 0.17399816698161885,
+          "ms_por_instancia": 0.0018054928871820439,
+          "umbral_anomalia": 0.5605776892727983
+        }
+      ],
+      "resumen": {
+        "accuracy": {
+          "mean": 0.32512038744118216,
+          "std": 0.029713609977593664,
+          "ci95_low": 0.28822606767533593,
+          "ci95_high": 0.3620147072070284
+        },
+        "precision": {
+          "mean": 0.8848225875208666,
+          "std": 0.05398911594140215,
+          "ci95_low": 0.8177862459615787,
+          "ci95_high": 0.9518589290801546
+        },
+        "recall": {
+          "mean": 0.10881561981948792,
+          "std": 0.03907828314756491,
+          "ci95_low": 0.060293522523543704,
+          "ci95_high": 0.15733771711543215
+        },
+        "f1": {
+          "mean": 0.19235418975746912,
+          "std": 0.06429995768633608,
+          "ci95_low": 0.11251524721232023,
+          "ci95_high": 0.272193132302618
+        },
+        "auc_roc": {
+          "mean": 0.9023947841529921,
+          "std": 0.005150103561198369,
+          "ci95_low": 0.8960000859740311,
+          "ci95_high": 0.9087894823319531
+        },
+        "auc_pr": {
+          "mean": 0.9210904452103941,
+          "std": 0.0069261082676034405,
+          "ci95_low": 0.9124905459268494,
+          "ci95_high": 0.9296903444939387
+        },
+        "balanced_accuracy": {
+          "mean": 0.5362151174347549,
+          "std": 0.020612216242169766,
+          "ci95_low": 0.5106216706036618,
+          "ci95_high": 0.561808564265848
+        },
+        "fpr": {
+          "mean": 0.03638538494997825,
+          "std": 0.0036993380029695343,
+          "ci95_low": 0.031792050134503966,
+          "ci95_high": 0.04097871976545253
+        },
+        "train_seconds": {
+          "mean": 0.18079943337943405,
+          "std": 0.0042114735599718695,
+          "ci95_low": 0.17557019828062995,
+          "ci95_high": 0.18602866847823815
+        },
+        "ms_por_instancia": {
+          "mean": 0.0017923981620874296,
+          "std": 1.929177649336287e-05,
+          "ci95_low": 0.0017684442577542273,
+          "ci95_high": 0.0018163520664206318
+        }
+      },
+      "mcnemar_vs_referencia": {
+        "solo_acierta_referencia": 21438,
+        "solo_acierta_otro": 22,
+        "p_value": 0.0
+      }
+    },
+    "lstm77": {
+      "nombre": "LSTM (77 features)",
+      "repeticiones": [
+        {
+          "accuracy": 0.9725103877163535,
+          "precision": 0.9676277006724854,
+          "recall": 0.9965371154908823,
+          "f1": 0.9818696575379757,
+          "auc_roc": 0.9937811621909339,
+          "auc_pr": 0.9977713380832919,
+          "balanced_accuracy": 0.9490623811469201,
+          "fpr": 0.0984123531970422,
+          "tn": 8291,
+          "fp": 905,
+          "fn": 94,
+          "tp": 27051,
+          "seed": 42,
+          "train_seconds": 11.419181125005707,
+          "ms_por_instancia": 0.010673800500746938,
+          "epocas_entrenadas": 12
+        },
+        {
+          "accuracy": 0.9715197710574833,
+          "precision": 0.964756140975436,
+          "recall": 0.9983422361392522,
+          "f1": 0.9812618810536797,
+          "auc_roc": 0.9936454468459182,
+          "auc_pr": 0.9977330237531933,
+          "balanced_accuracy": 0.9453433668734539,
+          "fpr": 0.1076555023923445,
+          "tn": 8206,
+          "fp": 990,
+          "fn": 45,
+          "tp": 27100,
+          "seed": 43,
+          "train_seconds": 11.718756999995094,
+          "ms_por_instancia": 0.009895995569593424,
+          "epocas_entrenadas": 12
+        },
+        {
+          "accuracy": 0.9720425965163314,
+          "precision": 0.9661065325198901,
+          "recall": 0.9975686130042365,
+          "f1": 0.9815855294160293,
+          "auc_roc": 0.9914950348406023,
+          "auc_pr": 0.9967903816560463,
+          "balanced_accuracy": 0.9471314139401348,
+          "fpr": 0.10330578512396695,
+          "tn": 8246,
+          "fp": 950,
+          "fn": 66,
+          "tp": 27079,
+          "seed": 44,
+          "train_seconds": 6.986822207982186,
+          "ms_por_instancia": 0.010054443796435374,
+          "epocas_entrenadas": 7
+        },
+        {
+          "accuracy": 0.9719600451280922,
+          "precision": 0.9664357637649075,
+          "recall": 0.9970897034444649,
+          "f1": 0.9815234537905024,
+          "auc_roc": 0.9891438379953452,
+          "auc_pr": 0.9960472114650075,
+          "balanced_accuracy": 0.9474356738187961,
+          "fpr": 0.10221835580687255,
+          "tn": 8256,
+          "fp": 940,
+          "fn": 79,
+          "tp": 27066,
+          "seed": 45,
+          "train_seconds": 11.66728900000453,
+          "ms_por_instancia": 0.010639889078844018,
+          "epocas_entrenadas": 12
+        },
+        {
+          "accuracy": 0.9709694284692221,
+          "precision": 0.9645324407093512,
+          "recall": 0.9978264873825751,
+          "f1": 0.9808970250058848,
+          "auc_roc": 0.9835254498520223,
+          "auc_pr": 0.9936822769699274,
+          "balanced_accuracy": 0.944759263699987,
+          "fpr": 0.10830795998260113,
+          "tn": 8200,
+          "fp": 996,
+          "fn": 59,
+          "tp": 27086,
+          "seed": 46,
+          "train_seconds": 12.122156125027686,
+          "ms_por_instancia": 0.011815933354539468,
+          "epocas_entrenadas": 12
+        }
+      ],
+      "resumen": {
+        "accuracy": {
+          "mean": 0.9718004457774965,
+          "std": 0.000582557841480778,
+          "ci95_low": 0.9710771046788584,
+          "ci95_high": 0.9725237868761345
+        },
+        "precision": {
+          "mean": 0.965891715728414,
+          "std": 0.0012740620906184442,
+          "ci95_low": 0.9643097586990169,
+          "ci95_high": 0.9674736727578112
+        },
+        "recall": {
+          "mean": 0.997472831092282,
+          "std": 0.000691459066619898,
+          "ci95_low": 0.9966142712630285,
+          "ci95_high": 0.9983313909215356
+        },
+        "f1": {
+          "mean": 0.9814275093608144,
+          "std": 0.00036691861119146754,
+          "ci95_low": 0.9809719197310269,
+          "ci95_high": 0.9818830989906018
+        },
+        "auc_roc": {
+          "mean": 0.9903181863449644,
+          "std": 0.0042417036565942905,
+          "ci95_low": 0.9850514156235219,
+          "ci95_high": 0.9955849570664068
+        },
+        "auc_pr": {
+          "mean": 0.9964048463854933,
+          "std": 0.001682281121274698,
+          "ci95_low": 0.9943160184823486,
+          "ci95_high": 0.998493674288638
+        },
+        "balanced_accuracy": {
+          "mean": 0.9467464198958583,
+          "std": 0.0017251315479769388,
+          "ci95_low": 0.9446043861605697,
+          "ci95_high": 0.9488884536311468
+        },
+        "fpr": {
+          "mean": 0.10397999130056548,
+          "std": 0.004086477772222638,
+          "ci95_low": 0.09890595897133671,
+          "ci95_high": 0.10905402362979426
+        },
+        "train_seconds": {
+          "mean": 10.782841091603041,
+          "std": 2.136974464747495,
+          "ci95_low": 8.129436833645318,
+          "ci95_high": 13.436245349560764
+        },
+        "ms_por_instancia": {
+          "mean": 0.010616012460031844,
+          "std": 0.0007545699752345214,
+          "ci95_low": 0.009679090087657632,
+          "ci95_high": 0.011552934832406055
+        }
+      },
+      "mcnemar_vs_referencia": {
+        "solo_acierta_referencia": 973,
+        "solo_acierta_otro": 4696,
+        "p_value": 0.0
+      }
+    },
+    "gru77": {
+      "nombre": "GRU (77 features)",
+      "repeticiones": [
+        {
+          "accuracy": 0.9724003191987012,
+          "precision": 0.9665548258138207,
+          "recall": 0.9975686130042365,
+          "f1": 0.9818168633636083,
+          "auc_roc": 0.998024480038932,
+          "auc_pr": 0.999330008081555,
+          "balanced_accuracy": 0.9478382429962462,
+          "fpr": 0.10189212701174424,
+          "tn": 8259,
+          "fp": 937,
+          "fn": 66,
+          "tp": 27079,
+          "seed": 42,
+          "train_seconds": 9.268002166005317,
+          "ms_por_instancia": 0.009761734899485152,
+          "epocas_entrenadas": 9
+        },
+        {
+          "accuracy": 0.9711070141162874,
+          "precision": 0.9663318917759748,
+          "recall": 0.9960213667342052,
+          "f1": 0.9809520354110732,
+          "auc_roc": 0.9917880458648803,
+          "auc_pr": 0.9970276322741953,
+          "balanced_accuracy": 0.9467927625319569,
+          "fpr": 0.10243584167029143,
+          "tn": 8254,
+          "fp": 942,
+          "fn": 108,
+          "tp": 27037,
+          "seed": 43,
+          "train_seconds": 6.666685792035423,
+          "ms_por_instancia": 0.00995758003404934,
+          "epocas_entrenadas": 7
+        },
+        {
+          "accuracy": 0.9738587270575934,
+          "precision": 0.9692594317652539,
+          "recall": 0.9966107938846933,
+          "f1": 0.9827448416158093,
+          "auc_roc": 0.9953002582829906,
+          "auc_pr": 0.9983314501150167,
+          "balanced_accuracy": 0.9516546792389974,
+          "fpr": 0.09330143540669857,
+          "tn": 8338,
+          "fp": 858,
+          "fn": 92,
+          "tp": 27053,
+          "seed": 44,
+          "train_seconds": 5.731993458990473,
+          "ms_por_instancia": 0.009901407253121606,
+          "epocas_entrenadas": 6
+        },
+        {
+          "accuracy": 0.9712996340221788,
+          "precision": 0.9674761802421377,
+          "recall": 0.9950267084177565,
+          "f1": 0.981058060766758,
+          "auc_roc": 0.9949979913904601,
+          "auc_pr": 0.9982276288243577,
+          "balanced_accuracy": 0.948144063212793,
+          "fpr": 0.0987385819921705,
+          "tn": 8288,
+          "fp": 908,
+          "fn": 135,
+          "tp": 27010,
+          "seed": 45,
+          "train_seconds": 8.344758457969874,
+          "ms_por_instancia": 0.009292174595852545,
+          "epocas_entrenadas": 9
+        },
+        {
+          "accuracy": 0.972317767810462,
+          "precision": 0.9673186255229378,
+          "recall": 0.9966107938846933,
+          "f1": 0.981746262157062,
+          "auc_roc": 0.9952663134227274,
+          "auc_pr": 0.9983426833243348,
+          "balanced_accuracy": 0.9486098771511331,
+          "fpr": 0.09939103958242715,
+          "tn": 8282,
+          "fp": 914,
+          "fn": 92,
+          "tp": 27053,
+          "seed": 46,
+          "train_seconds": 11.26091362501029,
+          "ms_por_instancia": 0.009562377892568372,
+          "epocas_entrenadas": 12
+        }
+      ],
+      "resumen": {
+        "accuracy": {
+          "mean": 0.9721966924410446,
+          "std": 0.0010966534122528546,
+          "ci95_low": 0.9708350173805429,
+          "ci95_high": 0.9735583675015462
+        },
+        "precision": {
+          "mean": 0.967388191024025,
+          "std": 0.0011537318848080218,
+          "ci95_low": 0.965955643679079,
+          "ci95_high": 0.9688207383689709
+        },
+        "recall": {
+          "mean": 0.996367655185117,
+          "std": 0.0009325484520786275,
+          "ci95_low": 0.9952097433455904,
+          "ci95_high": 0.9975255670246437
+        },
+        "f1": {
+          "mean": 0.9816636126628622,
+          "std": 0.0007197930343162286,
+          "ci95_low": 0.9807698715659938,
+          "ci95_high": 0.9825573537597305
+        },
+        "auc_roc": {
+          "mean": 0.9950754177999981,
+          "std": 0.0022134120470084727,
+          "ci95_low": 0.9923271037480371,
+          "ci95_high": 0.997823731851959
+        },
+        "auc_pr": {
+          "mean": 0.998251880523892,
+          "std": 0.0008179711823787146,
+          "ci95_low": 0.9972362351551642,
+          "ci95_high": 0.9992675258926198
+        },
+        "balanced_accuracy": {
+          "mean": 0.9486079250262254,
+          "std": 0.001829283202081372,
+          "ci95_low": 0.946336569931682,
+          "ci95_high": 0.9508792801207687
+        },
+        "fpr": {
+          "mean": 0.09915180513266637,
+          "std": 0.003631427832055992,
+          "ci95_low": 0.0946427919315273,
+          "ci95_high": 0.10366081833380544
+        },
+        "train_seconds": {
+          "mean": 8.254470700002276,
+          "std": 2.177042105618174,
+          "ci95_low": 5.551315894882473,
+          "ci95_high": 10.95762550512208
+        },
+        "ms_por_instancia": {
+          "mean": 0.009695054935015403,
+          "std": 0.00027196630754044716,
+          "ci95_low": 0.009357364162218017,
+          "ci95_high": 0.01003274570781279
+        }
+      },
+      "mcnemar_vs_referencia": {
+        "solo_acierta_referencia": 985,
+        "solo_acierta_otro": 4704,
+        "p_value": 0.0
+      }
+    },
+    "lstm47": {
+      "nombre": "LSTM (47 features)",
+      "repeticiones": [
+        {
+          "accuracy": 0.9703915687515479,
+          "precision": 0.9621343733380606,
+          "recall": 0.999705286424756,
+          "f1": 0.9805600722673894,
+          "auc_roc": 0.9982458196765377,
+          "auc_pr": 0.9994097167413131,
+          "balanced_accuracy": 0.9417839176795376,
+          "fpr": 0.11613745106568073,
+          "tn": 8128,
+          "fp": 1068,
+          "fn": 8,
+          "tp": 27137,
+          "seed": 42,
+          "train_seconds": 9.738895374990534,
+          "ms_por_instancia": 0.010921413362778017,
+          "epocas_entrenadas": 10
+        },
+        {
+          "accuracy": 0.9694284692220908,
+          "precision": 0.9610072248193795,
+          "recall": 0.999631608030945,
+          "f1": 0.9799389682382045,
+          "auc_roc": 0.9869374240812495,
+          "auc_pr": 0.9953154224860392,
+          "balanced_accuracy": 0.9399528201094264,
+          "fpr": 0.11972596781209222,
+          "tn": 8095,
+          "fp": 1101,
+          "fn": 10,
+          "tp": 27135,
+          "seed": 43,
+          "train_seconds": 12.03974041598849,
+          "ms_por_instancia": 0.011382257643801486,
+          "epocas_entrenadas": 12
+        },
+        {
+          "accuracy": 0.9705291543986131,
+          "precision": 0.9625345916412403,
+          "recall": 0.9994474120464174,
+          "f1": 0.9806437620863531,
+          "auc_roc": 0.9937747385662885,
+          "auc_pr": 0.9978376030616943,
+          "balanced_accuracy": 0.9423074380806249,
+          "fpr": 0.11483253588516747,
+          "tn": 8140,
+          "fp": 1056,
+          "fn": 15,
+          "tp": 27130,
+          "seed": 44,
+          "train_seconds": 8.76975662499899,
+          "ms_por_instancia": 0.01097103822152176,
+          "epocas_entrenadas": 8
+        },
+        {
+          "accuracy": 0.9701163974574173,
+          "precision": 0.9618588493849917,
+          "recall": 0.999631608030945,
+          "f1": 0.980381530457403,
+          "auc_roc": 0.9954806245293448,
+          "auc_pr": 0.9983593055284812,
+          "balanced_accuracy": 0.9413121067557944,
+          "fpr": 0.11700739451935624,
+          "tn": 8120,
+          "fp": 1076,
+          "fn": 10,
+          "tp": 27135,
+          "seed": 45,
+          "train_seconds": 12.658846125006676,
+          "ms_por_instancia": 0.013325039211952057,
+          "epocas_entrenadas": 12
+        },
+        {
+          "accuracy": 0.9698962604221127,
+          "precision": 0.9615534531022997,
+          "recall": 0.9996684472278504,
+          "f1": 0.9802405808619008,
+          "auc_roc": 0.9963991567845935,
+          "auc_pr": 0.9987525040532949,
+          "balanced_accuracy": 0.9408411831615546,
+          "fpr": 0.11798608090474119,
+          "tn": 8111,
+          "fp": 1085,
+          "fn": 9,
+          "tp": 27136,
+          "seed": 46,
+          "train_seconds": 12.927572541986592,
+          "ms_por_instancia": 0.011286076112809455,
+          "epocas_entrenadas": 12
+        }
+      ],
+      "resumen": {
+        "accuracy": {
+          "mean": 0.9700723700503563,
+          "std": 0.0004353449902170548,
+          "ci95_low": 0.9695318178492054,
+          "ci95_high": 0.9706129222515072
+        },
+        "precision": {
+          "mean": 0.9618176984571944,
+          "std": 0.0005793542399814823,
+          "ci95_low": 0.9610983351552027,
+          "ci95_high": 0.9625370617591862
+        },
+        "recall": {
+          "mean": 0.9996168723521828,
+          "std": 9.953402900060237e-05,
+          "ci95_low": 0.9994932845317765,
+          "ci95_high": 0.999740460172589
+        },
+        "f1": {
+          "mean": 0.9803529827822501,
+          "std": 0.00027941718929139366,
+          "ci95_low": 0.9800060405178277,
+          "ci95_high": 0.9806999250466726
+        },
+        "auc_roc": {
+          "mean": 0.9941675527276027,
+          "std": 0.004352170112100094,
+          "ci95_low": 0.9887636197853495,
+          "ci95_high": 0.9995714856698559
+        },
+        "auc_pr": {
+          "mean": 0.9979349103741646,
+          "std": 0.001572800845692056,
+          "ci95_low": 0.9959820201877243,
+          "ci95_high": 0.9998878005606049
+        },
+        "balanced_accuracy": {
+          "mean": 0.9412394931573875,
+          "std": 0.000902268743112389,
+          "ci95_low": 0.9401191785423603,
+          "ci95_high": 0.9423598077724148
+        },
+        "fpr": {
+          "mean": 0.11713788603740756,
+          "std": 0.0018540590132730959,
+          "ci95_low": 0.11483576771008117,
+          "ci95_high": 0.11944000436473395
+        },
+        "train_seconds": {
+          "mean": 11.226962216594256,
+          "std": 1.861127188819957,
+          "ci95_low": 8.916067590158336,
+          "ci95_high": 13.537856843030175
+        },
+        "ms_por_instancia": {
+          "mean": 0.011577164910572556,
+          "std": 0.0009968933944836866,
+          "ci95_low": 0.01033935827259502,
+          "ci95_high": 0.012814971548550092
+        }
+      },
+      "mcnemar_vs_referencia": {
+        "solo_acierta_referencia": 1063,
+        "solo_acierta_otro": 4709,
+        "p_value": 0.0
+      }
+    },
+    "lstm25": {
+      "nombre": "LSTM (25 features)",
+      "repeticiones": [
+        {
+          "accuracy": 0.8792273190060813,
+          "precision": 0.957719848740848,
+          "recall": 0.8770307607294161,
+          "f1": 0.9156010230179028,
+          "auc_roc": 0.9797352288881477,
+          "auc_pr": 0.9928100443133474,
+          "balanced_accuracy": 0.8813709697513978,
+          "fpr": 0.11428882122662026,
+          "tn": 8145,
+          "fp": 1051,
+          "fn": 3338,
+          "tp": 23807,
+          "seed": 42,
+          "train_seconds": 12.174886083055753,
+          "ms_por_instancia": 0.011577754245160134,
+          "epocas_entrenadas": 12
+        },
+        {
+          "accuracy": 0.9649982113865881,
+          "precision": 0.9613423201740309,
+          "recall": 0.9930742309817646,
+          "f1": 0.9769506758960605,
+          "auc_roc": 0.9798674509991812,
+          "auc_pr": 0.9926751714108764,
+          "balanced_accuracy": 0.9375984465043664,
+          "fpr": 0.11787733797303175,
+          "tn": 8112,
+          "fp": 1084,
+          "fn": 188,
+          "tp": 26957,
+          "seed": 43,
+          "train_seconds": 12.296474499977194,
+          "ms_por_instancia": 0.011445153765944696,
+          "epocas_entrenadas": 12
+        },
+        {
+          "accuracy": 0.9112847747722957,
+          "precision": 0.95873125455452,
+          "recall": 0.92086940504697,
+          "f1": 0.9394189935736029,
+          "auc_roc": 0.9771968535896705,
+          "auc_pr": 0.9916869762527429,
+          "balanced_accuracy": 0.9019310052638069,
+          "fpr": 0.11700739451935624,
+          "tn": 8120,
+          "fp": 1076,
+          "fn": 2148,
+          "tp": 24997,
+          "seed": 44,
+          "train_seconds": 8.703290958015714,
+          "ms_por_instancia": 0.011517192455077974,
+          "epocas_entrenadas": 8
+        },
+        {
+          "accuracy": 0.966759307669024,
+          "precision": 0.9591107020214537,
+          "recall": 0.9980475225640081,
+          "f1": 0.9781917966493356,
+          "auc_roc": 0.9707775594328495,
+          "auc_pr": 0.9888403274955222,
+          "balanced_accuracy": 0.9362247182198031,
+          "fpr": 0.1255980861244019,
+          "tn": 8041,
+          "fp": 1155,
+          "fn": 53,
+          "tp": 27092,
+          "seed": 45,
+          "train_seconds": 6.014560832991265,
+          "ms_por_instancia": 0.011256411490837719,
+          "epocas_entrenadas": 6
+        },
+        {
+          "accuracy": 0.9648055914806968,
+          "precision": 0.9621239191024084,
+          "recall": 0.9919322158776939,
+          "f1": 0.9768007110337197,
+          "auc_roc": 0.9905076434122776,
+          "auc_pr": 0.9966886624816054,
+          "balanced_accuracy": 0.9383323541328443,
+          "fpr": 0.11526750761200522,
+          "tn": 8136,
+          "fp": 1060,
+          "fn": 219,
+          "tp": 26926,
+          "seed": 46,
+          "train_seconds": 12.443621999991592,
+          "ms_por_instancia": 0.01106617181600559,
+          "epocas_entrenadas": 12
+        }
+      ],
+      "resumen": {
+        "accuracy": {
+          "mean": 0.9374150408629373,
+          "std": 0.040127176995541976,
+          "ci95_low": 0.8875905698380225,
+          "ci95_high": 0.987239511887852
+        },
+        "precision": {
+          "mean": 0.9598056089186521,
+          "std": 0.0018522669897542193,
+          "ci95_low": 0.957505715682413,
+          "ci95_high": 0.9621055021548911
+        },
+        "recall": {
+          "mean": 0.9561908270399705,
+          "std": 0.054552117906809694,
+          "ci95_low": 0.888455426209318,
+          "ci95_high": 1.023926227870623
+        },
+        "f1": {
+          "mean": 0.9573926400341243,
+          "std": 0.028554273421523776,
+          "ci95_low": 0.9219378267317516,
+          "ci95_high": 0.9928474533364969
+        },
+        "auc_roc": {
+          "mean": 0.9796169472644252,
+          "std": 0.0071182096744912045,
+          "ci95_low": 0.9707785225799437,
+          "ci95_high": 0.9884553719489066
+        },
+        "auc_pr": {
+          "mean": 0.9925402363908189,
+          "std": 0.0028159288654962525,
+          "ci95_low": 0.9890437988970294,
+          "ci95_high": 0.9960366738846084
+        },
+        "balanced_accuracy": {
+          "mean": 0.9190914987744438,
+          "std": 0.026093992053109093,
+          "ci95_low": 0.8866915282726832,
+          "ci95_high": 0.9514914692762045
+        },
+        "fpr": {
+          "mean": 0.11800782949108309,
+          "std": 0.004471305189781654,
+          "ci95_low": 0.11245597081194955,
+          "ci95_high": 0.12355968817021662
+        },
+        "train_seconds": {
+          "mean": 10.326566874806304,
+          "std": 2.872593042750979,
+          "ci95_low": 6.759771512131806,
+          "ci95_high": 13.893362237480801
+        },
+        "ms_por_instancia": {
+          "mean": 0.011372536754605223,
+          "std": 0.00020955743421137828,
+          "ci95_low": 0.011112336832989001,
+          "ci95_high": 0.011632736676221445
+        }
+      },
+      "mcnemar_vs_referencia": {
+        "solo_acierta_referencia": 4348,
+        "solo_acierta_otro": 4681,
+        "p_value": 0.00047526342538609697
+      }
+    },
+    "gru25": {
+      "nombre": "GRU (25 features)",
+      "repeticiones": [
+        {
+          "accuracy": 0.9627418067747172,
+          "precision": 0.9617574390374906,
+          "recall": 0.9894639896850249,
+          "f1": 0.9754140034863451,
+          "auc_roc": 0.9862241794124974,
+          "auc_pr": 0.995131287845457,
+          "balanced_accuracy": 0.9366632693096721,
+          "fpr": 0.11613745106568073,
+          "tn": 8128,
+          "fp": 1068,
+          "fn": 286,
+          "tp": 26859,
+          "seed": 42,
+          "train_seconds": 11.165271709032822,
+          "ms_por_instancia": 0.011233549352062512,
+          "epocas_entrenadas": 12
+        },
+        {
+          "accuracy": 0.9689056437632426,
+          "precision": 0.9622916444539219,
+          "recall": 0.99745809541352,
+          "f1": 0.9795593502405846,
+          "auc_roc": 0.9835276691772818,
+          "auc_pr": 0.9939999565749509,
+          "balanced_accuracy": 0.9410409224349027,
+          "fpr": 0.11537625054371466,
+          "tn": 8135,
+          "fp": 1061,
+          "fn": 69,
+          "tp": 27076,
+          "seed": 43,
+          "train_seconds": 8.231065333995502,
+          "ms_por_instancia": 0.009906718086723762,
+          "epocas_entrenadas": 8
+        },
+        {
+          "accuracy": 0.9384441815029856,
+          "precision": 0.9603726157030903,
+          "recall": 0.9570823356050838,
+          "f1": 0.9587246526560511,
+          "auc_roc": 0.9796725830245974,
+          "auc_pr": 0.9926491783363363,
+          "balanced_accuracy": 0.9202549564062827,
+          "fpr": 0.11657242279251849,
+          "tn": 8124,
+          "fp": 1072,
+          "fn": 1165,
+          "tp": 25980,
+          "seed": 44,
+          "train_seconds": 7.240072957996745,
+          "ms_por_instancia": 0.010720182907193312,
+          "epocas_entrenadas": 8
+        },
+        {
+          "accuracy": 0.9679975784926117,
+          "precision": 0.9621487015297048,
+          "recall": 0.9963529195063547,
+          "f1": 0.9789521310288661,
+          "auc_roc": 0.9866050200336168,
+          "auc_pr": 0.9952196814021373,
+          "balanced_accuracy": 0.940325220083756,
+          "fpr": 0.11570247933884298,
+          "tn": 8132,
+          "fp": 1064,
+          "fn": 99,
+          "tp": 27046,
+          "seed": 45,
+          "train_seconds": 10.647020208009053,
+          "ms_por_instancia": 0.009763476514792563,
+          "epocas_entrenadas": 12
+        },
+        {
+          "accuracy": 0.9622189813158691,
+          "precision": 0.9623609616074632,
+          "recall": 0.9880641002026156,
+          "f1": 0.9750431700445333,
+          "auc_roc": 0.9811015500745076,
+          "auc_pr": 0.9930967195677479,
+          "balanced_accuracy": 0.9369963824197072,
+          "fpr": 0.1140713353632014,
+          "tn": 8147,
+          "fp": 1049,
+          "fn": 324,
+          "tp": 26821,
+          "seed": 46,
+          "train_seconds": 10.496825916983653,
+          "ms_por_instancia": 0.009606804298329993,
+          "epocas_entrenadas": 12
+        }
+      ],
+      "resumen": {
+        "accuracy": {
+          "mean": 0.9600616383698852,
+          "std": 0.012453387588186067,
+          "ci95_low": 0.944598715345957,
+          "ci95_high": 0.9755245613938135
+        },
+        "precision": {
+          "mean": 0.9617862724663342,
+          "std": 0.0008240570507600993,
+          "ci95_low": 0.9607630704939394,
+          "ci95_high": 0.962809474438729
+        },
+        "recall": {
+          "mean": 0.9856842880825198,
+          "std": 0.01651108393608362,
+          "ci95_low": 0.9651830695877643,
+          "ci95_high": 1.0061855065772753
+        },
+        "f1": {
+          "mean": 0.9735386614912761,
+          "std": 0.008526277863257254,
+          "ci95_low": 0.9629518892297878,
+          "ci95_high": 0.9841254337527644
+        },
+        "auc_roc": {
+          "mean": 0.9834262003445003,
+          "std": 0.0030593103498559636,
+          "ci95_low": 0.979627564823752,
+          "ci95_high": 0.9872248358652487
+        },
+        "auc_pr": {
+          "mean": 0.9940193647453258,
+          "std": 0.0011625612514389652,
+          "ci95_low": 0.9925758542937073,
+          "ci95_high": 0.9954628751969443
+        },
+        "balanced_accuracy": {
+          "mean": 0.9350561501308642,
+          "std": 0.008500048040478998,
+          "ci95_low": 0.9245019464959989,
+          "ci95_high": 0.9456103537657294
+        },
+        "fpr": {
+          "mean": 0.11557198782079166,
+          "std": 0.0009523546779387255,
+          "ci95_low": 0.1143894833036742,
+          "ci95_high": 0.11675449233790912
+        },
+        "train_seconds": {
+          "mean": 9.556051225203555,
+          "std": 1.7164064097546916,
+          "ci95_low": 7.424851179924977,
+          "ci95_high": 11.687251270482134
+        },
+        "ms_por_instancia": {
+          "mean": 0.01024614623182043,
+          "std": 0.0006993953318405105,
+          "ci95_low": 0.009377732227762293,
+          "ci95_high": 0.011114560235878567
+        }
+      },
+      "mcnemar_vs_referencia": {
+        "solo_acierta_referencia": 1315,
+        "solo_acierta_otro": 4683,
+        "p_value": 0.0
+      }
+    }
+  }
+}

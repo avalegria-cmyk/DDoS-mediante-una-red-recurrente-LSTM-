@@ -1,0 +1,75 @@
+{
+  "flujos_totales": 1061,
+  "archivo_del_ataque": "flows-20261113-230603-679876.csv",
+  "grupos": {
+    "legitimo (127.0.0.1 -> victima)": {
+      "flujos": 225,
+      "marcados_bloquear": 225,
+      "fraccion_bloquear": 1.0,
+      "por_modelo(p>=umbral)": 0,
+      "por_regla_de_tasa": 225,
+      "solo_por_regla_de_tasa": 225,
+      "ruido_local_ignorado": 0,
+      "p_ataque_mediana": 0.4593844666377426,
+      "p_ataque_p90": 0.5025953679713333,
+      "pps_mediana": 10362.694300518137,
+      "paquetes_mediana": 14.0,
+      "duracion_ms_mediana": 1.351,
+      "clases_predichas": {
+        "Benign": 225
+      }
+    },
+    "ataque (IP local -> victima, ventana del ataque)": {
+      "flujos": 784,
+      "marcados_bloquear": 782,
+      "fraccion_bloquear": 0.9974489795918368,
+      "por_modelo(p>=umbral)": 0,
+      "por_regla_de_tasa": 782,
+      "solo_por_regla_de_tasa": 782,
+      "ruido_local_ignorado": 0,
+      "p_ataque_mediana": 0.11530493443063428,
+      "p_ataque_p90": 0.4153013551933077,
+      "pps_mediana": 4742.403362925221,
+      "paquetes_mediana": 7.0,
+      "duracion_ms_mediana": 1.431,
+      "clases_predichas": {
+        "Benign": 784
+      }
+    },
+    "sondeos desde la IP atacante fuera del ataque": {
+      "flujos": 46,
+      "marcados_bloquear": 3,
+      "fraccion_bloquear": 0.06521739130434782,
+      "por_modelo(p>=umbral)": 0,
+      "por_regla_de_tasa": 3,
+      "solo_por_regla_de_tasa": 3,
+      "ruido_local_ignorado": 0,
+      "p_ataque_mediana": 0.5353462110489822,
+      "p_ataque_p90": 0.5622798713122725,
+      "pps_mediana": 2.9972096062678952,
+      "paquetes_mediana": 3.0,
+      "duracion_ms_mediana": 500.4115,
+      "clases_predichas": {
+        "Benign": 46
+      }
+    },
+    "otro trafico de la maquina (no dirigido a la victima)": {
+      "flujos": 6,
+      "marcados_bloquear": 2,
+      "fraccion_bloquear": 0.3333333333333333,
+      "por_modelo(p>=umbral)": 1,
+      "por_regla_de_tasa": 1,
+      "solo_por_regla_de_tasa": 1,
+      "ruido_local_ignorado": 3,
+      "p_ataque_mediana": 0.7092885967873463,
+      "p_ataque_p90": 0.7917859817560564,
+      "pps_mediana": 15.19583759805736,
+      "paquetes_mediana": 3.0,
+      "duracion_ms_mediana": 101.549,
+      "clases_predichas": {
+        "Benign": 4,
+        "TFTP": 2
+      }
+    }
+  }
+}
